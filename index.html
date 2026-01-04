@@ -103,6 +103,20 @@
             object-fit: cover;
         }
 
+        .agent-avatar-icon {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+        }
+
+        .agent-avatar-icon svg {
+            width: 80%;
+            height: 80%;
+        }
+
         .online-dot {
             position: absolute;
             bottom: 2px;
@@ -146,7 +160,19 @@
         <div class="bg-primary p-4 flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full border-2 border-white/30 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop" alt="Agent">
+                    <div class="agent-avatar-icon">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Head/Circle -->
+                            <circle cx="50" cy="50" r="45" fill="#6b7280"/>
+                            <!-- Ears/Hair tufts -->
+                            <circle cx="30" cy="25" r="8" fill="#6b7280"/>
+                            <circle cx="70" cy="25" r="8" fill="#6b7280"/>
+                            <!-- Rectangular Glasses -->
+                            <rect x="20" y="40" width="20" height="18" rx="2" fill="none" stroke="white" stroke-width="3"/>
+                            <rect x="60" y="40" width="20" height="18" rx="2" fill="none" stroke="white" stroke-width="3"/>
+                            <line x1="40" y1="49" x2="60" y2="49" stroke="white" stroke-width="3"/>
+                        </svg>
+                    </div>
                 </div>
                 <div class="text-white">
                     <p class="text-[10px] font-bold opacity-70 uppercase tracking-widest">Meridian Advisor</p>
@@ -218,7 +244,19 @@
                 <!-- Agent Button -->
                 <button onclick="toggleChat('Optimization Logic')" class="agent-chat-btn">
                     <div class="agent-avatar-circle relative">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop" alt="Consultant">
+                        <div class="agent-avatar-icon">
+                            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Head/Circle -->
+                                <circle cx="50" cy="50" r="45" fill="#6b7280"/>
+                                <!-- Ears/Hair tufts -->
+                                <circle cx="30" cy="25" r="8" fill="#6b7280"/>
+                                <circle cx="70" cy="25" r="8" fill="#6b7280"/>
+                                <!-- Rectangular Glasses -->
+                                <rect x="20" y="40" width="20" height="18" rx="2" fill="none" stroke="white" stroke-width="3"/>
+                                <rect x="60" y="40" width="20" height="18" rx="2" fill="none" stroke="white" stroke-width="3"/>
+                                <line x1="40" y1="49" x2="60" y2="49" stroke="white" stroke-width="3"/>
+                            </svg>
+                        </div>
                         <span class="online-dot"></span>
                     </div>
                     <div>
@@ -282,7 +320,19 @@
                 </div>
                 <button onclick="toggleChat('Bayesian Distributions')" class="agent-chat-btn">
                     <div class="agent-avatar-circle relative">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop" alt="Consultant">
+                        <div class="agent-avatar-icon">
+                            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Head/Circle -->
+                                <circle cx="50" cy="50" r="45" fill="#6b7280"/>
+                                <!-- Ears/Hair tufts -->
+                                <circle cx="30" cy="25" r="8" fill="#6b7280"/>
+                                <circle cx="70" cy="25" r="8" fill="#6b7280"/>
+                                <!-- Rectangular Glasses -->
+                                <rect x="20" y="40" width="20" height="18" rx="2" fill="none" stroke="white" stroke-width="3"/>
+                                <rect x="60" y="40" width="20" height="18" rx="2" fill="none" stroke="white" stroke-width="3"/>
+                                <line x1="40" y1="49" x2="60" y2="49" stroke="white" stroke-width="3"/>
+                            </svg>
+                        </div>
                         <span class="online-dot"></span>
                     </div>
                     <div>
@@ -306,7 +356,19 @@
                 </div>
                 <button onclick="toggleChat('Adstock Decay')" class="agent-chat-btn">
                     <div class="agent-avatar-circle relative">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop" alt="Consultant">
+                        <div class="agent-avatar-icon">
+                            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Head/Circle -->
+                                <circle cx="50" cy="50" r="45" fill="#6b7280"/>
+                                <!-- Ears/Hair tufts -->
+                                <circle cx="30" cy="25" r="8" fill="#6b7280"/>
+                                <circle cx="70" cy="25" r="8" fill="#6b7280"/>
+                                <!-- Rectangular Glasses -->
+                                <rect x="20" y="40" width="20" height="18" rx="2" fill="none" stroke="white" stroke-width="3"/>
+                                <rect x="60" y="40" width="20" height="18" rx="2" fill="none" stroke="white" stroke-width="3"/>
+                                <line x1="40" y1="49" x2="60" y2="49" stroke="white" stroke-width="3"/>
+                            </svg>
+                        </div>
                         <span class="online-dot"></span>
                     </div>
                     <div>
@@ -326,7 +388,19 @@
                 </div>
                 <button onclick="toggleChat('Baseline Demand')" class="agent-chat-btn">
                     <div class="agent-avatar-circle relative">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop" alt="Consultant">
+                        <div class="agent-avatar-icon">
+                            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Head/Circle -->
+                                <circle cx="50" cy="50" r="45" fill="#6b7280"/>
+                                <!-- Ears/Hair tufts -->
+                                <circle cx="30" cy="25" r="8" fill="#6b7280"/>
+                                <circle cx="70" cy="25" r="8" fill="#6b7280"/>
+                                <!-- Rectangular Glasses -->
+                                <rect x="20" y="40" width="20" height="18" rx="2" fill="none" stroke="white" stroke-width="3"/>
+                                <rect x="60" y="40" width="20" height="18" rx="2" fill="none" stroke="white" stroke-width="3"/>
+                                <line x1="40" y1="49" x2="60" y2="49" stroke="white" stroke-width="3"/>
+                            </svg>
+                        </div>
                         <span class="online-dot"></span>
                     </div>
                     <div>
@@ -346,7 +420,19 @@
                 </div>
                 <button onclick="toggleChat('Reach Saturation')" class="agent-chat-btn">
                     <div class="agent-avatar-circle relative">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop" alt="Consultant">
+                        <div class="agent-avatar-icon">
+                            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Head/Circle -->
+                                <circle cx="50" cy="50" r="45" fill="#6b7280"/>
+                                <!-- Ears/Hair tufts -->
+                                <circle cx="30" cy="25" r="8" fill="#6b7280"/>
+                                <circle cx="70" cy="25" r="8" fill="#6b7280"/>
+                                <!-- Rectangular Glasses -->
+                                <rect x="20" y="40" width="20" height="18" rx="2" fill="none" stroke="white" stroke-width="3"/>
+                                <rect x="60" y="40" width="20" height="18" rx="2" fill="none" stroke="white" stroke-width="3"/>
+                                <line x1="40" y1="49" x2="60" y2="49" stroke="white" stroke-width="3"/>
+                            </svg>
+                        </div>
                         <span class="online-dot"></span>
                     </div>
                     <div>
