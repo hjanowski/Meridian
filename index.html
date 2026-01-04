@@ -303,13 +303,16 @@
 
                 <div class="dashboard-card">
                     <div class="flex justify-between items-start mb-6">
-                        <h2 class="text-xl font-black">Saturation Curves</h2>
-                        <span class="insight-pill bg-cyan-50 text-cyan-700">Scalable: TV Ads</span>
+                        <div>
+                            <h2 class="text-xl font-black">Saturation Landscape</h2>
+                            <p class="text-xs text-slate-500 italic mt-1">Incremental Revenue vs. Absolute Spend.</p>
+                        </div>
+                        <span class="insight-pill bg-purple-50 text-purple-700">Volume Saturation</span>
                     </div>
                     <div class="chart-container">
-                        <canvas id="saturationChart1"></canvas>
+                        <canvas id="saturationLandscapeChart"></canvas>
                     </div>
-                    <button onclick="toggleChat('Saturation Points')" class="agent-chat-btn">
+                    <button onclick="toggleChat('Saturation Landscape')" class="agent-chat-btn">
                         <div class="sparkle-icon">
                             <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
                                 <!-- Large star -->
@@ -553,17 +556,178 @@
                 }
             });
 
-            // 3. Saturation (Hill Curves)
-            new Chart(document.getElementById('saturationChart1').getContext('2d'), {
+            // 3. Saturation Landscape
+            function generateSaturationData() {
+                // Generate data points for smooth curves
+                const spendPoints = [];
+                const paidSearchData = [];
+                const socialMetaData = [];
+                const linearTVData = [];
+                
+                for (let spend = 0; spend <= 1500; spend += 25) {
+                    spendPoints.push(spend);
+                    
+                    // Paid Search: steep initial, then flattens (saturation curve)
+                    const paidSearch = spend < 500 
+                        ? 1.8 * spend - 0.0008 * spend * spend
+                        : 900 + 1.0 * (spend - 500) - 0.0003 * (spend - 500) * (spend - 500);
+                    paidSearchData.push(Math.max(0, Math.min(2400, paidSearch)));
+                    
+                    // Social Meta: similar but slightly less aggressive
+                    const socialMeta = spend < 500
+                        ? 1.7 * spend - 0.0007 * spend * spend
+                        : 850 + 0.95 * (spend - 500) - 0.0003 * (spend - 500) * (spend - 500);
+                    socialMetaData.push(Math.max(0, Math.min(2300, socialMeta)));
+                    
+                    // Linear TV: more linear growth
+                    const linearTV = 1.5 * spend - 0.0002 * spend * spend;
+                    linearTVData.push(Math.max(0, Math.min(2300, linearTV)));
+                }
+                
+                return { spendPoints, paidSearchData, socialMetaData, linearTVData };
+            }
+            
+            const saturationData = generateSaturationData();
+            
+            // Create marker datasets - find closest index for each marker point
+            function findClosestIndex(value, array) {
+                return array.reduce((prev, curr, idx) => 
+                    Math.abs(curr - value) < Math.abs(array[prev] - value) ? idx : prev, 0
+                );
+            }
+            
+            // Find indices for marker positions
+            const paidSearchIdx1 = findClosestIndex(210, saturationData.spendPoints);
+            const paidSearchIdx2 = findClosestIndex(470, saturationData.spendPoints);
+            const socialMetaIdx1 = findClosestIndex(210, saturationData.spendPoints);
+            const socialMetaIdx2 = findClosestIndex(470, saturationData.spendPoints);
+            const linearTVIdx1 = findClosestIndex(210, saturationData.spendPoints);
+            const linearTVIdx2 = findClosestIndex(950, saturationData.spendPoints);
+            
+            // Create marker data arrays (null for non-marker points, use actual Y values at marker indices)
+            const paidSearchMarkers = saturationData.paidSearchData.map((val, idx) => 
+                (idx === paidSearchIdx1 || idx === paidSearchIdx2) ? val : null
+            );
+            const socialMetaMarkers = saturationData.socialMetaData.map((val, idx) => 
+                (idx === socialMetaIdx1 || idx === socialMetaIdx2) ? val : null
+            );
+            const linearTVMarkers = saturationData.linearTVData.map((val, idx) => 
+                (idx === linearTVIdx1 || idx === linearTVIdx2) ? val : null
+            );
+            
+            new Chart(document.getElementById('saturationLandscapeChart').getContext('2d'), {
                 type: 'line',
                 data: {
-                    labels: [0, 20, 40, 60, 80, 100],
+                    labels: saturationData.spendPoints,
                     datasets: [
-                        { label: 'Search', data: [0, 60, 85, 95, 100, 102], borderColor: '#4338ca', tension: 0.3, pointRadius: 0 },
-                        { label: 'TV', data: [0, 12, 28, 48, 68, 88], borderColor: '#f43f5e', tension: 0.3, pointRadius: 0 }
+                        {
+                            label: 'Paid Search',
+                            data: saturationData.paidSearchData,
+                            borderColor: '#1e40af', // Dark blue
+                            backgroundColor: 'transparent',
+                            tension: 0.4,
+                            pointRadius: 0,
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Social Meta',
+                            data: saturationData.socialMetaData,
+                            borderColor: '#06b6d4', // Cyan/light blue
+                            backgroundColor: 'transparent',
+                            tension: 0.4,
+                            pointRadius: 0,
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Linear TV',
+                            data: saturationData.linearTVData,
+                            borderColor: '#dc2626', // Red
+                            backgroundColor: 'transparent',
+                            tension: 0.4,
+                            pointRadius: 0,
+                            borderWidth: 2
+                        },
+                        // Markers for Paid Search
+                        {
+                            label: '',
+                            data: paidSearchMarkers,
+                            pointRadius: 5,
+                            pointBackgroundColor: '#000000',
+                            pointBorderColor: '#000000',
+                            pointBorderWidth: 2,
+                            showLine: false,
+                            borderColor: 'transparent'
+                        },
+                        // Markers for Social Meta
+                        {
+                            label: '',
+                            data: socialMetaMarkers,
+                            pointRadius: 5,
+                            pointBackgroundColor: '#000000',
+                            pointBorderColor: '#000000',
+                            pointBorderWidth: 2,
+                            showLine: false,
+                            borderColor: 'transparent'
+                        },
+                        // Markers for Linear TV
+                        {
+                            label: '',
+                            data: linearTVMarkers,
+                            pointRadius: 5,
+                            pointBackgroundColor: '#000000',
+                            pointBorderColor: '#000000',
+                            pointBorderWidth: 2,
+                            showLine: false,
+                            borderColor: 'transparent'
+                        }
                     ]
                 },
-                options: commonOptions
+                options: {
+                    ...commonOptions,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Absolute Spend ($000s)',
+                                font: { weight: 'bold' }
+                            },
+                            min: 0,
+                            max: 1500,
+                            ticks: {
+                                stepSize: 200,
+                                maxTicksLimit: 8
+                            },
+                            grid: {
+                                display: true,
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Total Revenue Contribution ($000s)',
+                                font: { weight: 'bold' }
+                            },
+                            beginAtZero: true,
+                            max: 2500,
+                            ticks: {
+                                stepSize: 500,
+                                maxTicksLimit: 6
+                            },
+                            grid: {
+                                display: true,
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        ...commonOptions.plugins,
+                        legend: {
+                            ...commonOptions.plugins.legend,
+                            filter: (item) => item.text !== '' // Hide marker datasets from legend
+                        }
+                    }
+                }
             });
 
             // 4. Bayesian
