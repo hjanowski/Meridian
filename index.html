@@ -68,12 +68,12 @@
         .agent-chat-btn {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 8px 16px;
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 50px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            gap: 10px;
+            padding: 10px 20px;
+            background: #2563eb; /* Blue background */
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: absolute;
             bottom: 24px;
@@ -84,8 +84,22 @@
 
         .agent-chat-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-            border-color: #4338ca;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+            background: #1d4ed8; /* Darker blue on hover */
+        }
+
+        .sparkle-icon {
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .sparkle-icon svg {
+            width: 100%;
+            height: 100%;
         }
 
         .agent-avatar-circle {
@@ -109,7 +123,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: white;
+            background: #1e293b; /* Dark background for agent look */
         }
 
         .agent-avatar-icon svg {
@@ -163,20 +177,20 @@
                     <div class="agent-avatar-icon">
                         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                             <!-- Head/Circle -->
-                            <circle cx="50" cy="50" r="45" fill="#6b7280"/>
-                            <!-- Ears/Hair tufts -->
-                            <circle cx="30" cy="25" r="8" fill="#6b7280"/>
-                            <circle cx="70" cy="25" r="8" fill="#6b7280"/>
-                            <!-- Rectangular Glasses -->
-                            <rect x="20" y="40" width="20" height="18" rx="2" fill="none" stroke="white" stroke-width="3"/>
-                            <rect x="60" y="40" width="20" height="18" rx="2" fill="none" stroke="white" stroke-width="3"/>
-                            <line x1="40" y1="49" x2="60" y2="49" stroke="white" stroke-width="3"/>
+                            <circle cx="50" cy="50" r="45" fill="#475569"/>
+                            <!-- Agent Sunglasses (dark, professional) -->
+                            <rect x="15" y="38" width="28" height="20" rx="3" fill="#0f172a" opacity="0.9"/>
+                            <rect x="57" y="38" width="28" height="20" rx="3" fill="#0f172a" opacity="0.9"/>
+                            <rect x="43" y="48" width="14" height="3" fill="#0f172a"/>
+                            <!-- Professional suit/tie silhouette -->
+                            <rect x="35" y="65" width="30" height="25" rx="2" fill="#334155"/>
+                            <rect x="47" y="65" width="6" height="25" fill="#1e293b"/>
                         </svg>
                     </div>
                 </div>
                 <div class="text-white">
                     <p class="text-[10px] font-bold opacity-70 uppercase tracking-widest">Meridian Advisor</p>
-                    <p class="font-bold text-sm">David Chen</p>
+                    <p class="font-bold text-sm">Agentforce</p>
                 </div>
             </div>
             <button onclick="toggleChat(null)" class="text-white opacity-60 hover:opacity-100">✕</button>
@@ -243,25 +257,19 @@
                 </div>
                 <!-- Agent Button -->
                 <button onclick="toggleChat('Optimization Logic')" class="agent-chat-btn">
-                    <div class="agent-avatar-circle relative">
-                        <div class="agent-avatar-icon">
-                            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                                <!-- Head/Circle -->
-                                <circle cx="50" cy="50" r="45" fill="#6b7280"/>
-                                <!-- Ears/Hair tufts -->
-                                <circle cx="30" cy="25" r="8" fill="#6b7280"/>
-                                <circle cx="70" cy="25" r="8" fill="#6b7280"/>
-                                <!-- Rectangular Glasses -->
-                                <rect x="20" y="40" width="20" height="18" rx="2" fill="none" stroke="white" stroke-width="3"/>
-                                <rect x="60" y="40" width="20" height="18" rx="2" fill="none" stroke="white" stroke-width="3"/>
-                                <line x1="40" y1="49" x2="60" y2="49" stroke="white" stroke-width="3"/>
-                            </svg>
-                        </div>
-                        <span class="online-dot"></span>
+                    <div class="sparkle-icon">
+                        <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Large star -->
+                            <path d="M12 2L14.09 8.26L20 10L14.09 11.74L12 18L9.91 11.74L4 10L9.91 8.26L12 2Z"/>
+                            <!-- Small star top right -->
+                            <path d="M18 4L18.5 5.5L20 6L18.5 6.5L18 8L17.5 6.5L16 6L17.5 5.5L18 4Z"/>
+                            <!-- Small star bottom left -->
+                            <path d="M6 14L6.5 15.5L8 16L6.5 16.5L6 18L5.5 16.5L4 16L5.5 15.5L6 14Z"/>
+                        </svg>
                     </div>
                     <div>
-                        <p class="text-xs font-black text-slate-700 uppercase tracking-wider">Let's Chat</p>
-                        <p class="text-[10px] text-slate-400 font-bold">David Chen</p>
+                        <p class="text-xs font-bold text-white uppercase tracking-wider">Optimize</p>
+                        <p class="text-[10px] text-white/80 font-bold">Agentforce</p>
                     </div>
                 </button>
             </section>
@@ -277,13 +285,19 @@
                         <canvas id="roiChart"></canvas>
                     </div>
                     <button onclick="toggleChat('Marginal Efficiency')" class="agent-chat-btn">
-                        <div class="agent-avatar-circle relative">
-                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop" alt="Consultant">
-                            <span class="online-dot"></span>
+                        <div class="sparkle-icon">
+                            <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Large star -->
+                                <path d="M12 2L14.09 8.26L20 10L14.09 11.74L12 18L9.91 11.74L4 10L9.91 8.26L12 2Z"/>
+                                <!-- Small star top right -->
+                                <path d="M18 4L18.5 5.5L20 6L18.5 6.5L18 8L17.5 6.5L16 6L17.5 5.5L18 4Z"/>
+                                <!-- Small star bottom left -->
+                                <path d="M6 14L6.5 15.5L8 16L6.5 16.5L6 18L5.5 16.5L4 16L5.5 15.5L6 14Z"/>
+                            </svg>
                         </div>
                         <div>
-                            <p class="text-xs font-black text-slate-700 uppercase tracking-wider">Let's Chat</p>
-                            <p class="text-[10px] text-slate-400 font-bold">David Chen</p>
+                            <p class="text-xs font-bold text-white uppercase tracking-wider">Optimize</p>
+                            <p class="text-[10px] text-white/80 font-bold">Agentforce</p>
                         </div>
                     </button>
                 </div>
@@ -297,13 +311,19 @@
                         <canvas id="saturationChart1"></canvas>
                     </div>
                     <button onclick="toggleChat('Saturation Points')" class="agent-chat-btn">
-                        <div class="agent-avatar-circle relative">
-                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop" alt="Consultant">
-                            <span class="online-dot"></span>
+                        <div class="sparkle-icon">
+                            <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Large star -->
+                                <path d="M12 2L14.09 8.26L20 10L14.09 11.74L12 18L9.91 11.74L4 10L9.91 8.26L12 2Z"/>
+                                <!-- Small star top right -->
+                                <path d="M18 4L18.5 5.5L20 6L18.5 6.5L18 8L17.5 6.5L16 6L17.5 5.5L18 4Z"/>
+                                <!-- Small star bottom left -->
+                                <path d="M6 14L6.5 15.5L8 16L6.5 16.5L6 18L5.5 16.5L4 16L5.5 15.5L6 14Z"/>
+                            </svg>
                         </div>
                         <div>
-                            <p class="text-xs font-black text-slate-700 uppercase tracking-wider">Let's Chat</p>
-                            <p class="text-[10px] text-slate-400 font-bold">David Chen</p>
+                            <p class="text-xs font-bold text-white uppercase tracking-wider">Optimize</p>
+                            <p class="text-[10px] text-white/80 font-bold">Agentforce</p>
                         </div>
                     </button>
                 </div>
@@ -319,25 +339,19 @@
                     <div id="plotlyBayesian" style="width: 100%; height: 100%;"></div>
                 </div>
                 <button onclick="toggleChat('Bayesian Distributions')" class="agent-chat-btn">
-                    <div class="agent-avatar-circle relative">
-                        <div class="agent-avatar-icon">
-                            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                                <!-- Head/Circle -->
-                                <circle cx="50" cy="50" r="45" fill="#6b7280"/>
-                                <!-- Ears/Hair tufts -->
-                                <circle cx="30" cy="25" r="8" fill="#6b7280"/>
-                                <circle cx="70" cy="25" r="8" fill="#6b7280"/>
-                                <!-- Rectangular Glasses -->
-                                <rect x="20" y="40" width="20" height="18" rx="2" fill="none" stroke="white" stroke-width="3"/>
-                                <rect x="60" y="40" width="20" height="18" rx="2" fill="none" stroke="white" stroke-width="3"/>
-                                <line x1="40" y1="49" x2="60" y2="49" stroke="white" stroke-width="3"/>
-                            </svg>
-                        </div>
-                        <span class="online-dot"></span>
+                    <div class="sparkle-icon">
+                        <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Large star -->
+                            <path d="M12 2L14.09 8.26L20 10L14.09 11.74L12 18L9.91 11.74L4 10L9.91 8.26L12 2Z"/>
+                            <!-- Small star top right -->
+                            <path d="M18 4L18.5 5.5L20 6L18.5 6.5L18 8L17.5 6.5L16 6L17.5 5.5L18 4Z"/>
+                            <!-- Small star bottom left -->
+                            <path d="M6 14L6.5 15.5L8 16L6.5 16.5L6 18L5.5 16.5L4 16L5.5 15.5L6 14Z"/>
+                        </svg>
                     </div>
                     <div>
-                        <p class="text-xs font-black text-slate-700 uppercase tracking-wider">Let's Chat</p>
-                        <p class="text-[10px] text-slate-400 font-bold">David Chen</p>
+                        <p class="text-xs font-bold text-white uppercase tracking-wider">Optimize</p>
+                        <p class="text-[10px] text-white/80 font-bold">Agentforce</p>
                     </div>
                 </button>
             </section>
@@ -355,25 +369,19 @@
                     <canvas id="decayChart"></canvas>
                 </div>
                 <button onclick="toggleChat('Adstock Decay')" class="agent-chat-btn">
-                    <div class="agent-avatar-circle relative">
-                        <div class="agent-avatar-icon">
-                            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                                <!-- Head/Circle -->
-                                <circle cx="50" cy="50" r="45" fill="#6b7280"/>
-                                <!-- Ears/Hair tufts -->
-                                <circle cx="30" cy="25" r="8" fill="#6b7280"/>
-                                <circle cx="70" cy="25" r="8" fill="#6b7280"/>
-                                <!-- Rectangular Glasses -->
-                                <rect x="20" y="40" width="20" height="18" rx="2" fill="none" stroke="white" stroke-width="3"/>
-                                <rect x="60" y="40" width="20" height="18" rx="2" fill="none" stroke="white" stroke-width="3"/>
-                                <line x1="40" y1="49" x2="60" y2="49" stroke="white" stroke-width="3"/>
-                            </svg>
-                        </div>
-                        <span class="online-dot"></span>
+                    <div class="sparkle-icon">
+                        <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Large star -->
+                            <path d="M12 2L14.09 8.26L20 10L14.09 11.74L12 18L9.91 11.74L4 10L9.91 8.26L12 2Z"/>
+                            <!-- Small star top right -->
+                            <path d="M18 4L18.5 5.5L20 6L18.5 6.5L18 8L17.5 6.5L16 6L17.5 5.5L18 4Z"/>
+                            <!-- Small star bottom left -->
+                            <path d="M6 14L6.5 15.5L8 16L6.5 16.5L6 18L5.5 16.5L4 16L5.5 15.5L6 14Z"/>
+                        </svg>
                     </div>
                     <div>
-                        <p class="text-xs font-black text-slate-700 uppercase tracking-wider">Let's Chat</p>
-                        <p class="text-[10px] text-slate-400 font-bold">David Chen</p>
+                        <p class="text-xs font-bold text-white uppercase tracking-wider">Optimize</p>
+                        <p class="text-[10px] text-white/80 font-bold">Agentforce</p>
                     </div>
                 </button>
             </section>
@@ -387,25 +395,19 @@
                     <canvas id="baselineChart"></canvas>
                 </div>
                 <button onclick="toggleChat('Baseline Demand')" class="agent-chat-btn">
-                    <div class="agent-avatar-circle relative">
-                        <div class="agent-avatar-icon">
-                            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                                <!-- Head/Circle -->
-                                <circle cx="50" cy="50" r="45" fill="#6b7280"/>
-                                <!-- Ears/Hair tufts -->
-                                <circle cx="30" cy="25" r="8" fill="#6b7280"/>
-                                <circle cx="70" cy="25" r="8" fill="#6b7280"/>
-                                <!-- Rectangular Glasses -->
-                                <rect x="20" y="40" width="20" height="18" rx="2" fill="none" stroke="white" stroke-width="3"/>
-                                <rect x="60" y="40" width="20" height="18" rx="2" fill="none" stroke="white" stroke-width="3"/>
-                                <line x1="40" y1="49" x2="60" y2="49" stroke="white" stroke-width="3"/>
-                            </svg>
-                        </div>
-                        <span class="online-dot"></span>
+                    <div class="sparkle-icon">
+                        <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Large star -->
+                            <path d="M12 2L14.09 8.26L20 10L14.09 11.74L12 18L9.91 11.74L4 10L9.91 8.26L12 2Z"/>
+                            <!-- Small star top right -->
+                            <path d="M18 4L18.5 5.5L20 6L18.5 6.5L18 8L17.5 6.5L16 6L17.5 5.5L18 4Z"/>
+                            <!-- Small star bottom left -->
+                            <path d="M6 14L6.5 15.5L8 16L6.5 16.5L6 18L5.5 16.5L4 16L5.5 15.5L6 14Z"/>
+                        </svg>
                     </div>
                     <div>
-                        <p class="text-xs font-black text-slate-700 uppercase tracking-wider">Let's Chat</p>
-                        <p class="text-[10px] text-slate-400 font-bold">David Chen</p>
+                        <p class="text-xs font-bold text-white uppercase tracking-wider">Optimize</p>
+                        <p class="text-[10px] text-white/80 font-bold">Agentforce</p>
                     </div>
                 </button>
             </section>
@@ -419,25 +421,19 @@
                     <div id="plotlySaturationCurve" style="width: 100%; height: 100%;"></div>
                 </div>
                 <button onclick="toggleChat('Reach Saturation')" class="agent-chat-btn">
-                    <div class="agent-avatar-circle relative">
-                        <div class="agent-avatar-icon">
-                            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                                <!-- Head/Circle -->
-                                <circle cx="50" cy="50" r="45" fill="#6b7280"/>
-                                <!-- Ears/Hair tufts -->
-                                <circle cx="30" cy="25" r="8" fill="#6b7280"/>
-                                <circle cx="70" cy="25" r="8" fill="#6b7280"/>
-                                <!-- Rectangular Glasses -->
-                                <rect x="20" y="40" width="20" height="18" rx="2" fill="none" stroke="white" stroke-width="3"/>
-                                <rect x="60" y="40" width="20" height="18" rx="2" fill="none" stroke="white" stroke-width="3"/>
-                                <line x1="40" y1="49" x2="60" y2="49" stroke="white" stroke-width="3"/>
-                            </svg>
-                        </div>
-                        <span class="online-dot"></span>
+                    <div class="sparkle-icon">
+                        <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Large star -->
+                            <path d="M12 2L14.09 8.26L20 10L14.09 11.74L12 18L9.91 11.74L4 10L9.91 8.26L12 2Z"/>
+                            <!-- Small star top right -->
+                            <path d="M18 4L18.5 5.5L20 6L18.5 6.5L18 8L17.5 6.5L16 6L17.5 5.5L18 4Z"/>
+                            <!-- Small star bottom left -->
+                            <path d="M6 14L6.5 15.5L8 16L6.5 16.5L6 18L5.5 16.5L4 16L5.5 15.5L6 14Z"/>
+                        </svg>
                     </div>
                     <div>
-                        <p class="text-xs font-black text-slate-700 uppercase tracking-wider">Let's Chat</p>
-                        <p class="text-[10px] text-slate-400 font-bold">David Chen</p>
+                        <p class="text-xs font-bold text-white uppercase tracking-wider">Optimize</p>
+                        <p class="text-[10px] text-white/80 font-bold">Agentforce</p>
                     </div>
                 </button>
             </section>
@@ -481,7 +477,7 @@
             const overlay = document.getElementById('chat-overlay');
             const chatText = document.getElementById('chat-text');
             if(topic) {
-                chatText.innerHTML = `Hi! I'm David. I noticed you're exploring the <strong>${topic}</strong> chart. Would you like me to break down the specific Meridian priors we used for this calculation?`;
+                chatText.innerHTML = `Hi! I'm Agentforce. I noticed you're exploring the <strong>${topic}</strong> chart. Would you like me to break down the specific Meridian priors we used for this calculation?`;
                 overlay.classList.remove('hidden');
                 overlay.classList.remove('translate-y-4');
                 overlay.classList.remove('opacity-0');
