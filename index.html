@@ -465,52 +465,14 @@
                         optimizationChartInstance.data.datasets = optimizationChartInstance.data.datasets.slice(0, 2);
                     }
                     
-                    // Add yellow marker dots at top of bars using scatter plot
-                    // We need to use the same x positions as bars but y positions at bar tops
-                    optimizationChartInstance.data.datasets.push({
-                        label: '',
-                        data: [
-                            {x: 0, y: 95},
-                            {x: 1, y: 100},
-                            {x: 2, y: 100},
-                            {x: 3, y: 98},
-                            {x: 4, y: 98}
-                        ],
-                        backgroundColor: '#fbbf24',
-                        borderColor: '#ffffff',
-                        borderWidth: 2,
-                        pointRadius: 7,
-                        pointHoverRadius: 9,
-                        showLine: false,
-                        type: 'scatter',
-                        order: 0
-                    });
-                    optimizationChartInstance.data.datasets.push({
-                        label: '',
-                        data: [
-                            {x: 0, y: 70},
-                            {x: 1, y: 145},
-                            {x: 2, y: 130},
-                            {x: 3, y: 60},
-                            {x: 4, y: 88}
-                        ],
-                        backgroundColor: '#fbbf24',
-                        borderColor: '#ffffff',
-                        borderWidth: 2,
-                        pointRadius: 7,
-                        pointHoverRadius: 9,
-                        showLine: false,
-                        type: 'scatter',
-                        order: 0
-                    });
-                    
                     optimizationChartInstance.update('none');
                     
-                    // Add change labels and arrows after chart renders
+                    // Add change labels, dots, and arrows after chart renders
                     setTimeout(() => {
                         addChangeLabels();
+                        addYellowDots();
                         drawArrows();
-                    }, 300);
+                    }, 400);
                 }
             } else {
                 budgetSummary.classList.add('hidden');
@@ -523,8 +485,9 @@
                         optimizationChartInstance.data.datasets = optimizationChartInstance.data.datasets.slice(0, 2);
                     }
                     optimizationChartInstance.update('none');
-                    // Remove change labels and arrows
+                    // Remove change labels, dots, and arrows
                     document.querySelectorAll('.change-label').forEach(el => el.remove());
+                    document.querySelectorAll('.yellow-dot').forEach(el => el.remove());
                     document.querySelectorAll('.arrow-overlay').forEach(el => el.remove());
                 }
             }
@@ -539,6 +502,9 @@
             
             if (!chart) return;
             
+            const chartArea = chart.chartArea;
+            const currentMeta = chart.getDatasetMeta(0);
+            
             const changes = [
                 { text: 'Reduce Spend by 25k', direction: 'down' },
                 { text: 'Increase Spend by 45k', direction: 'up' },
@@ -547,23 +513,19 @@
                 { text: 'Reduce Spend by 10k', direction: 'down' }
             ];
             
-            // Get chart dimensions and bar positions
-            const currentMeta = chart.getDatasetMeta(0);
-            const chartArea = chart.chartArea;
-            
             changes.forEach((change, idx) => {
                 if (currentMeta.data[idx]) {
                     const bar = currentMeta.data[idx];
-                    const x = bar.x + chartArea.left;
+                    const x = bar.x;
                     const y = chartArea.top - 25;
                     
                     const label = document.createElement('div');
                     label.className = 'change-label absolute text-xs font-bold text-slate-700 text-center';
                     label.textContent = change.text;
-                    label.style.left = `${x - 50}px`;
+                    label.style.left = `${x + chartArea.left - 50}px`;
                     label.style.top = `${y}px`;
                     label.style.width = '100px';
-                    label.style.zIndex = '10';
+                    label.style.zIndex = '15';
                     chartContainer.appendChild(label);
                 }
             });
@@ -579,16 +541,12 @@
             if (!chart) return;
             
             const chartArea = chart.chartArea;
+            const currentMeta = chart.getDatasetMeta(0);
+            const optimizedMeta = chart.getDatasetMeta(1);
+            const yScale = chart.scales.y;
             
-            // Get positions of marker datasets
-            const currentMarkers = chart.getDatasetMeta(2); // Current markers
-            const optimizedMarkers = chart.getDatasetMeta(3); // Optimized markers
-            
-            if (!currentMarkers || !optimizedMarkers || currentMarkers.data.length === 0) {
-                // Retry after a short delay if markers aren't ready
-                setTimeout(drawArrows, 100);
-                return;
-            }
+            const currentValues = [95, 100, 100, 98, 98];
+            const optimizedValues = [70, 145, 130, 60, 88];
             
             // Create SVG overlay positioned over chart area
             const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -597,13 +555,13 @@
             svg.style.top = `${chartArea.top}px`;
             svg.style.width = `${chartArea.right - chartArea.left}px`;
             svg.style.height = `${chartArea.bottom - chartArea.top}px`;
-            svg.style.zIndex = '10';
+            svg.style.zIndex = '11';
             svg.setAttribute('viewBox', `0 0 ${chartArea.right - chartArea.left} ${chartArea.bottom - chartArea.top}`);
             
             // Add arrowhead marker definition
             const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
             const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
-            marker.setAttribute('id', 'arrowhead-yellow');
+            marker.setAttribute('id', 'arrowhead-orange');
             marker.setAttribute('markerWidth', '12');
             marker.setAttribute('markerHeight', '12');
             marker.setAttribute('refX', '10');
@@ -611,37 +569,27 @@
             marker.setAttribute('orient', 'auto');
             const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
             polygon.setAttribute('points', '0 0, 12 3, 0 6');
-            polygon.setAttribute('fill', '#f97316'); // Orange color like in image
+            polygon.setAttribute('fill', '#f97316'); // Orange color
             marker.appendChild(polygon);
             defs.appendChild(marker);
             svg.appendChild(defs);
             
-            // Draw arrows from current marker to optimized marker
-            currentMarkers.data.forEach((currentPoint, idx) => {
-                if (optimizedMarkers.data[idx] && currentPoint && optimizedMarkers.data[idx]) {
-                    const optimizedPoint = optimizedMarkers.data[idx];
-                    
-                    // Get absolute positions
-                    const x1 = currentPoint.x;
-                    const y1 = currentPoint.y;
-                    const x2 = optimizedPoint.x;
-                    const y2 = optimizedPoint.y;
-                    
-                    // Convert to SVG coordinates (relative to chart area)
-                    const svgX1 = x1 - chartArea.left;
-                    const svgY1 = y1 - chartArea.top;
-                    const svgX2 = x2 - chartArea.left;
-                    const svgY2 = y2 - chartArea.top;
+            // Draw arrows from current dot to optimized dot
+            currentMeta.data.forEach((bar, idx) => {
+                if (optimizedMeta.data[idx]) {
+                    const x = bar.x - chartArea.left;
+                    const y1 = yScale.getPixelForValue(currentValues[idx]) - chartArea.top;
+                    const y2 = yScale.getPixelForValue(optimizedValues[idx]) - chartArea.top;
                     
                     // Draw arrow line with orange color
                     const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                    line.setAttribute('x1', svgX1);
-                    line.setAttribute('y1', svgY1);
-                    line.setAttribute('x2', svgX2);
-                    line.setAttribute('y2', svgY2);
+                    line.setAttribute('x1', x);
+                    line.setAttribute('y1', y1);
+                    line.setAttribute('x2', x);
+                    line.setAttribute('y2', y2);
                     line.setAttribute('stroke', '#f97316'); // Orange color
                     line.setAttribute('stroke-width', '4');
-                    line.setAttribute('marker-end', 'url(#arrowhead-yellow)');
+                    line.setAttribute('marker-end', 'url(#arrowhead-orange)');
                     svg.appendChild(line);
                 }
             });
