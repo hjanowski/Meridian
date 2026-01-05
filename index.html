@@ -214,12 +214,7 @@
                     <span class="font-black text-xl text-neutral tracking-tight">Meridian Command</span>
                 </div>
                 <div class="flex space-x-2 md:space-x-8 h-full">
-                    <button id="tab-insights" onclick="switchTab('insights')" class="px-2 h-full transition-all tab-active text-sm font-bold tracking-widest">
-                        Insights and Optimization
-                    </button>
-                    <button id="tab-beyond" onclick="switchTab('beyond')" class="px-2 h-full transition-all text-gray-400 hover:text-primary text-sm font-bold tracking-widest">
-                        Beyond ROI
-                    </button>
+                    <!-- Navigation removed - single page view -->
                 </div>
             </div>
         </div>
@@ -228,19 +223,70 @@
     <!-- Header Section -->
     <header class="bg-neutral text-white py-16">
         <div class="max-w-7xl mx-auto px-6 text-center">
-            <h1 id="page-title" class="text-4xl md:text-6xl font-black mb-4 tracking-tighter">Insights and Optimization</h1>
+            <h1 id="page-title" class="text-4xl md:text-6xl font-black mb-4 tracking-tighter">Meridian Strategic Command</h1>
             <p id="page-description" class="text-lg text-slate-400 max-w-2xl mx-auto font-medium">
-                Turning complex Bayesian MMM data into actionable growth strategies.
+                Unified dashboard for Bayesian MMM insights and optimization strategies.
             </p>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto px-6 py-12">
 
-        <!-- DASHBOARD 1: INSIGHTS AND OPTIMIZATION -->
-        <div id="section-insights" class="space-y-12">
+        <!-- Informational Widgets at Top (Side by Side) -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+            <!-- Organic Baseline vs. Media Lift (Smaller) -->
+            <div class="dashboard-card">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-black">Organic Baseline vs. Media Lift</h2>
+                    <span class="insight-pill bg-purple-50 text-purple-700">68% Organic Base</span>
+                </div>
+                <div class="chart-container !h-[280px]">
+                    <canvas id="baselineChart"></canvas>
+                </div>
+                <button onclick="toggleChat('Baseline Demand')" class="agent-chat-btn">
+                    <div class="sparkle-icon">
+                        <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L14.09 8.26L20 10L14.09 11.74L12 18L9.91 11.74L4 10L9.91 8.26L12 2Z"/>
+                            <path d="M18 4L18.5 5.5L20 6L18.5 6.5L18 8L17.5 6.5L16 6L17.5 5.5L18 4Z"/>
+                            <path d="M6 14L6.5 15.5L8 16L6.5 16.5L6 18L5.5 16.5L4 16L5.5 15.5L6 14Z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-white tracking-wider">Let's Chat</p>
+                        <p class="text-[10px] text-white/80 font-bold">Agentforce</p>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Uncertainty Analysis (Smaller) -->
+            <div class="dashboard-card">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-black">Uncertainty Analysis</h2>
+                    <span class="insight-pill bg-slate-100 text-slate-600 border border-slate-200">92% Model Confidence</span>
+                </div>
+                <div class="chart-container !h-[280px]">
+                    <div id="plotlyBayesian" style="width: 100%; height: 100%;"></div>
+                </div>
+                <button onclick="toggleChat('Bayesian Distributions')" class="agent-chat-btn">
+                    <div class="sparkle-icon">
+                        <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L14.09 8.26L20 10L14.09 11.74L12 18L9.91 11.74L4 10L9.91 8.26L12 2Z"/>
+                            <path d="M18 4L18.5 5.5L20 6L18.5 6.5L18 8L17.5 6.5L16 6L17.5 5.5L18 4Z"/>
+                            <path d="M6 14L6.5 15.5L8 16L6.5 16.5L6 18L5.5 16.5L4 16L5.5 15.5L6 14Z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-white tracking-wider">Let's Chat</p>
+                        <p class="text-[10px] text-white/80 font-bold">Agentforce</p>
+                    </div>
+                </button>
+            </div>
+        </section>
+
+        <!-- Main Dashboard Widgets -->
+        <div class="space-y-12">
             
-            <!-- Optimization -->
+            <!-- Budget Optimization -->
             <section class="dashboard-card">
                 <div class="flex justify-between items-start mb-8 gap-4">
                     <div>
@@ -254,42 +300,11 @@
                 <div class="chart-container">
                     <canvas id="optimizationChart"></canvas>
                 </div>
-                <!-- Agent Button -->
                 <button onclick="toggleChat('Optimization Logic')" class="agent-chat-btn">
                     <div class="sparkle-icon">
                         <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Large star -->
                             <path d="M12 2L14.09 8.26L20 10L14.09 11.74L12 18L9.91 11.74L4 10L9.91 8.26L12 2Z"/>
-                            <!-- Small star top right -->
                             <path d="M18 4L18.5 5.5L20 6L18.5 6.5L18 8L17.5 6.5L16 6L17.5 5.5L18 4Z"/>
-                            <!-- Small star bottom left -->
-                            <path d="M6 14L6.5 15.5L8 16L6.5 16.5L6 18L5.5 16.5L4 16L5.5 15.5L6 14Z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-xs font-bold text-white tracking-wider">Let's Chat</p>
-                        <p class="text-[10px] text-white/80 font-bold">Agentforce</p>
-                    </div>
-                </button>
-            </section>
-
-            <!-- Channel Efficiency -->
-            <section class="dashboard-card">
-                <div class="flex justify-between items-start mb-6">
-                    <h2 class="text-xl font-black">Channel Efficiency (mROI)</h2>
-                    <span class="insight-pill bg-indigo-50 text-indigo-700">Search: 3.8x ROI</span>
-                </div>
-                <div class="chart-container">
-                    <canvas id="roiChart"></canvas>
-                </div>
-                <button onclick="toggleChat('Marginal Efficiency')" class="agent-chat-btn">
-                    <div class="sparkle-icon">
-                        <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Large star -->
-                            <path d="M12 2L14.09 8.26L20 10L14.09 11.74L12 18L9.91 11.74L4 10L9.91 8.26L12 2Z"/>
-                            <!-- Small star top right -->
-                            <path d="M18 4L18.5 5.5L20 6L18.5 6.5L18 8L17.5 6.5L16 6L17.5 5.5L18 4Z"/>
-                            <!-- Small star bottom left -->
                             <path d="M6 14L6.5 15.5L8 16L6.5 16.5L6 18L5.5 16.5L4 16L5.5 15.5L6 14Z"/>
                         </svg>
                     </div>
@@ -315,11 +330,8 @@
                 <button onclick="toggleChat('Saturation Landscape')" class="agent-chat-btn">
                     <div class="sparkle-icon">
                         <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Large star -->
                             <path d="M12 2L14.09 8.26L20 10L14.09 11.74L12 18L9.91 11.74L4 10L9.91 8.26L12 2Z"/>
-                            <!-- Small star top right -->
                             <path d="M18 4L18.5 5.5L20 6L18.5 6.5L18 8L17.5 6.5L16 6L17.5 5.5L18 4Z"/>
-                            <!-- Small star bottom left -->
                             <path d="M6 14L6.5 15.5L8 16L6.5 16.5L6 18L5.5 16.5L4 16L5.5 15.5L6 14Z"/>
                         </svg>
                     </div>
@@ -330,37 +342,7 @@
                 </button>
             </section>
 
-            <!-- Saturation Curves -->
-            <section class="dashboard-card">
-                <div class="flex justify-between items-center mb-8">
-                    <h2 class="text-2xl font-black">Saturation Curves</h2>
-                    <span class="insight-pill bg-rose-50 text-rose-700">3.5x Frequency Cap</span>
-                </div>
-                <div class="chart-container !h-[450px]">
-                    <div id="plotlySaturationCurve" style="width: 100%; height: 100%;"></div>
-                </div>
-                <button onclick="toggleChat('Reach Saturation')" class="agent-chat-btn">
-                    <div class="sparkle-icon">
-                        <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Large star -->
-                            <path d="M12 2L14.09 8.26L20 10L14.09 11.74L12 18L9.91 11.74L4 10L9.91 8.26L12 2Z"/>
-                            <!-- Small star top right -->
-                            <path d="M18 4L18.5 5.5L20 6L18.5 6.5L18 8L17.5 6.5L16 6L17.5 5.5L18 4Z"/>
-                            <!-- Small star bottom left -->
-                            <path d="M6 14L6.5 15.5L8 16L6.5 16.5L6 18L5.5 16.5L4 16L5.5 15.5L6 14Z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-xs font-bold text-white tracking-wider">Let's Chat</p>
-                        <p class="text-[10px] text-white/80 font-bold">Agentforce</p>
-                    </div>
-                </button>
-            </section>
-        </div>
-
-        <!-- DASHBOARD 2: BEYOND ROI -->
-        <div id="section-beyond" class="hidden-section space-y-12">
-            
+            <!-- Adstock Carryover Effects -->
             <section class="dashboard-card">
                 <div class="flex justify-between items-center mb-8">
                     <h2 class="text-2xl font-black">Adstock Carryover Effects</h2>
@@ -372,11 +354,8 @@
                 <button onclick="toggleChat('Adstock Decay')" class="agent-chat-btn">
                     <div class="sparkle-icon">
                         <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Large star -->
                             <path d="M12 2L14.09 8.26L20 10L14.09 11.74L12 18L9.91 11.74L4 10L9.91 8.26L12 2Z"/>
-                            <!-- Small star top right -->
                             <path d="M18 4L18.5 5.5L20 6L18.5 6.5L18 8L17.5 6.5L16 6L17.5 5.5L18 4Z"/>
-                            <!-- Small star bottom left -->
                             <path d="M6 14L6.5 15.5L8 16L6.5 16.5L6 18L5.5 16.5L4 16L5.5 15.5L6 14Z"/>
                         </svg>
                     </div>
@@ -387,22 +366,20 @@
                 </button>
             </section>
 
+            <!-- Channel Efficiency -->
             <section class="dashboard-card">
-                <div class="flex justify-between items-center mb-8">
-                    <h2 class="text-2xl font-black">Organic Baseline vs. Media Lift</h2>
-                    <span class="insight-pill bg-purple-50 text-purple-700">68% Organic Base</span>
+                <div class="flex justify-between items-start mb-6">
+                    <h2 class="text-xl font-black">Channel Efficiency (mROI)</h2>
+                    <span class="insight-pill bg-indigo-50 text-indigo-700">Search: 3.8x ROI</span>
                 </div>
-                <div class="chart-container !h-[450px]">
-                    <canvas id="baselineChart"></canvas>
+                <div class="chart-container">
+                    <canvas id="roiChart"></canvas>
                 </div>
-                <button onclick="toggleChat('Baseline Demand')" class="agent-chat-btn">
+                <button onclick="toggleChat('Marginal Efficiency')" class="agent-chat-btn">
                     <div class="sparkle-icon">
                         <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Large star -->
                             <path d="M12 2L14.09 8.26L20 10L14.09 11.74L12 18L9.91 11.74L4 10L9.91 8.26L12 2Z"/>
-                            <!-- Small star top right -->
                             <path d="M18 4L18.5 5.5L20 6L18.5 6.5L18 8L17.5 6.5L16 6L17.5 5.5L18 4Z"/>
-                            <!-- Small star bottom left -->
                             <path d="M6 14L6.5 15.5L8 16L6.5 16.5L6 18L5.5 16.5L4 16L5.5 15.5L6 14Z"/>
                         </svg>
                     </div>
@@ -413,32 +390,6 @@
                 </button>
             </section>
 
-            <!-- Uncertainty Analysis -->
-            <section class="dashboard-card">
-                <div class="flex justify-between items-center mb-8">
-                    <h2 class="text-2xl font-black">Uncertainty Analysis</h2>
-                    <span class="insight-pill bg-slate-100 text-slate-600 border border-slate-200">92% Model Confidence</span>
-                </div>
-                <div class="chart-container !h-[450px]">
-                    <div id="plotlyBayesian" style="width: 100%; height: 100%;"></div>
-                </div>
-                <button onclick="toggleChat('Bayesian Distributions')" class="agent-chat-btn">
-                    <div class="sparkle-icon">
-                        <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Large star -->
-                            <path d="M12 2L14.09 8.26L20 10L14.09 11.74L12 18L9.91 11.74L4 10L9.91 8.26L12 2Z"/>
-                            <!-- Small star top right -->
-                            <path d="M18 4L18.5 5.5L20 6L18.5 6.5L18 8L17.5 6.5L16 6L17.5 5.5L18 4Z"/>
-                            <!-- Small star bottom left -->
-                            <path d="M6 14L6.5 15.5L8 16L6.5 16.5L6 18L5.5 16.5L4 16L5.5 15.5L6 14Z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-xs font-bold text-white tracking-wider">Let's Chat</p>
-                        <p class="text-[10px] text-white/80 font-bold">Agentforce</p>
-                    </div>
-                </button>
-            </section>
         </div>
 
     </main>
@@ -451,29 +402,7 @@
     </footer>
 
     <script>
-        function switchTab(tab) {
-            const insightsSection = document.getElementById('section-insights');
-            const beyondSection = document.getElementById('section-beyond');
-            const insightsTab = document.getElementById('tab-insights');
-            const beyondTab = document.getElementById('tab-beyond');
-            const pageTitle = document.getElementById('page-title');
-            const pageDesc = document.getElementById('page-description');
-
-            insightsSection.classList.toggle('hidden-section', tab !== 'insights');
-            beyondSection.classList.toggle('hidden-section', tab !== 'beyond');
-            
-            insightsTab.classList.toggle('tab-active', tab === 'insights');
-            insightsTab.classList.toggle('text-gray-400', tab !== 'insights');
-            beyondTab.classList.toggle('tab-active', tab === 'beyond');
-            beyondTab.classList.toggle('text-gray-400', tab !== 'beyond');
-
-            pageTitle.innerText = tab === 'insights' ? "Insights and Optimization" : "Beyond ROI";
-            pageDesc.innerText = tab === 'insights' 
-                ? "Turning complex Bayesian MMM data into actionable growth strategies." 
-                : "Explore structural physics: Adstock decay, baseline sales, and saturation limits.";
-            
-            window.dispatchEvent(new Event('resize'));
-        }
+        // Tab switching removed - single page view
 
         function toggleChat(topic) {
             const overlay = document.getElementById('chat-overlay');
@@ -887,19 +816,7 @@
                 options: { ...commonOptions, scales: { y: { stacked: true } } }
             });
 
-            // 7. S-Curve
-            let freqX = [], reachY = [];
-            for(let i=0; i<=10; i+=0.5) { freqX.push(i); reachY.push(100 * (1-Math.exp(-0.4*i))); }
-            Plotly.newPlot('plotlySaturationCurve', [{
-                x: freqX, y: reachY, type: 'scatter', fill: 'tozeroy', mode: 'lines',
-                line: {color: '#06b6d4', width: 4}
-            }], {
-                margin: {t: 10, r: 10, l: 40, b: 50},
-                xaxis: {title: 'Investment Multiplier', fixedrange: true},
-                yaxis: {title: 'Cumulative Impact %', fixedrange: true},
-                plot_bgcolor: "rgba(0,0,0,0)",
-                paper_bgcolor: "rgba(0,0,0,0)"
-            }, {responsive: true, displayModeBar: false});
+            // Saturation Curves widget removed
         };
     </script>
 </body>
