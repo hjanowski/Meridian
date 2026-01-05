@@ -258,10 +258,10 @@
                 </button>
             </div>
 
-            <!-- Uncertainty Analysis (Smaller) -->
+            <!-- Certainty Analysis (Smaller) -->
             <div class="dashboard-card">
                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-black">Uncertainty Analysis</h2>
+                    <h2 class="text-lg font-black">Certainty Analysis</h2>
                     <span class="insight-pill bg-slate-100 text-slate-600 border border-slate-200">92% Model Confidence</span>
                 </div>
                 <div class="chart-container !h-[280px]">
@@ -297,10 +297,41 @@
                         +12.5% Revenue Lift
                     </div>
                 </div>
-                <div class="chart-container">
+                <div class="chart-container relative">
                     <canvas id="optimizationChart"></canvas>
                 </div>
-                <button onclick="toggleChat('Optimization Logic')" class="agent-chat-btn">
+                
+                <!-- Budget Summary (Hidden by default) -->
+                <div id="budgetSummary" class="hidden mt-6 p-6 bg-slate-50 rounded-xl border border-slate-200">
+                    <div class="grid grid-cols-3 gap-4 mb-6">
+                        <div class="text-center">
+                            <p class="text-sm text-slate-600 font-medium">Total Overspend</p>
+                            <p class="text-2xl font-black text-slate-800">$75,000</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-sm text-slate-600 font-medium">Total Underspend</p>
+                            <p class="text-2xl font-black text-slate-800">$73,000</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-sm text-slate-600 font-medium">Spend Surplus</p>
+                            <p class="text-2xl font-black text-emerald-600">$2,000</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 justify-center">
+                        <button class="px-6 py-3 bg-primary text-white rounded-lg font-bold hover:bg-indigo-700 transition-colors">
+                            Visualize Insights
+                        </button>
+                        <button class="px-6 py-3 bg-primary text-white rounded-lg font-bold hover:bg-indigo-700 transition-colors">
+                            Create New Budget Allocation Plan
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="flex gap-4 mt-4">
+                    <button onclick="toggleVisualizeInsights()" class="px-6 py-2 bg-primary text-white rounded-lg font-bold hover:bg-indigo-700 transition-colors">
+                        Visualize Insights
+                    </button>
+                    <button onclick="toggleChat('Optimization Logic')" class="agent-chat-btn">
                     <div class="sparkle-icon">
                         <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12 2L14.09 8.26L20 10L14.09 11.74L12 18L9.91 11.74L4 10L9.91 8.26L12 2Z"/>
@@ -417,6 +448,115 @@
             }
         }
 
+        let optimizationChartInstance = null;
+        let insightsVisible = false;
+
+        function toggleVisualizeInsights() {
+            const budgetSummary = document.getElementById('budgetSummary');
+            insightsVisible = !insightsVisible;
+            
+            if (insightsVisible) {
+                budgetSummary.classList.remove('hidden');
+                // Update chart with enhanced visualization
+                if (optimizationChartInstance) {
+                    // Update data to match image values
+                    optimizationChartInstance.data.datasets[0].data = [95, 100, 100, 98, 98]; // Current Spend
+                    optimizationChartInstance.data.datasets[1].data = [70, 145, 130, 60, 88]; // Optimized Spend
+                    
+                    // Remove existing marker datasets if any
+                    if (optimizationChartInstance.data.datasets.length > 2) {
+                        optimizationChartInstance.data.datasets = optimizationChartInstance.data.datasets.slice(0, 2);
+                    }
+                    
+                    // Add yellow marker dots at top of bars
+                    optimizationChartInstance.data.datasets.push({
+                        label: '',
+                        data: [95, 100, 100, 98, 98],
+                        backgroundColor: '#fbbf24',
+                        borderColor: '#fbbf24',
+                        borderWidth: 2,
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        showLine: false,
+                        type: 'scatter',
+                        order: 0
+                    });
+                    optimizationChartInstance.data.datasets.push({
+                        label: '',
+                        data: [70, 145, 130, 60, 88],
+                        backgroundColor: '#fbbf24',
+                        borderColor: '#fbbf24',
+                        borderWidth: 2,
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        showLine: false,
+                        type: 'scatter',
+                        order: 0
+                    });
+                    
+                    optimizationChartInstance.update();
+                    
+                    // Add change labels after chart renders
+                    setTimeout(() => {
+                        addChangeLabels();
+                    }, 100);
+                }
+            } else {
+                budgetSummary.classList.add('hidden');
+                // Reset to original data
+                if (optimizationChartInstance) {
+                    optimizationChartInstance.data.datasets[0].data = [100, 100, 100, 100, 100];
+                    optimizationChartInstance.data.datasets[1].data = [75, 145, 130, 60, 90];
+                    // Remove marker datasets
+                    if (optimizationChartInstance.data.datasets.length > 2) {
+                        optimizationChartInstance.data.datasets = optimizationChartInstance.data.datasets.slice(0, 2);
+                    }
+                    optimizationChartInstance.update();
+                    // Remove change labels
+                    document.querySelectorAll('.change-label').forEach(el => el.remove());
+                }
+            }
+        }
+
+        function addChangeLabels() {
+            // Remove existing labels
+            document.querySelectorAll('.change-label').forEach(el => el.remove());
+            
+            const chartContainer = document.getElementById('optimizationChart').parentElement;
+            const canvas = document.getElementById('optimizationChart');
+            const chart = optimizationChartInstance;
+            
+            if (!chart) return;
+            
+            const changes = [
+                { text: 'Reduce Spend by 25k', direction: 'down', arrow: '↓' },
+                { text: 'Increase Spend by 45k', direction: 'up', arrow: '↑' },
+                { text: 'Increase Spend by 30k', direction: 'up', arrow: '↑' },
+                { text: 'Reduce Spend by 38k', direction: 'down', arrow: '↓' },
+                { text: 'Reduce Spend by 10k', direction: 'down', arrow: '↓' }
+            ];
+            
+            // Get chart dimensions and bar positions
+            const meta = chart.getDatasetMeta(0);
+            const chartArea = chart.chartArea;
+            
+            changes.forEach((change, idx) => {
+                if (meta.data[idx]) {
+                    const bar = meta.data[idx];
+                    const x = bar.x;
+                    const y = Math.min(bar.y, chartArea.top - 20);
+                    
+                    const label = document.createElement('div');
+                    label.className = 'change-label absolute text-xs font-bold text-slate-700 flex items-center gap-1';
+                    label.innerHTML = `<span>${change.arrow}</span> <span>${change.text}</span>`;
+                    label.style.left = `${x + chartArea.left - 40}px`;
+                    label.style.top = `${y - 10}px`;
+                    label.style.zIndex = '10';
+                    chartContainer.appendChild(label);
+                }
+            });
+        }
+
         // --- Standard Chart Utils ---
         function wrapLabel(label) {
             if (typeof label !== 'string' || label.length <= 16) return label;
@@ -454,7 +594,7 @@
 
         window.onload = function() {
             // 1. Optimization
-            new Chart(document.getElementById('optimizationChart').getContext('2d'), {
+            optimizationChartInstance = new Chart(document.getElementById('optimizationChart').getContext('2d'), {
                 type: 'bar',
                 data: {
                     labels: ["Paid Search Ads", "Social Media Ads", "Online Video Ads", "Display Ads", "Linear TV Ads"].map(wrapLabel),
@@ -463,7 +603,28 @@
                         { label: 'Optimized Spend', data: [75, 145, 130, 60, 90], backgroundColor: '#4338ca', borderRadius: 8 }
                     ]
                 },
-                options: commonOptions
+                options: {
+                    ...commonOptions,
+                    plugins: {
+                        ...commonOptions.plugins,
+                        tooltip: {
+                            ...commonOptions.plugins.tooltip,
+                            callbacks: {
+                                afterLabel: (context) => {
+                                    if (insightsVisible && context.datasetIndex === 1) {
+                                        const current = context.chart.data.datasets[0].data[context.dataIndex];
+                                        const optimized = context.chart.data.datasets[1].data[context.dataIndex];
+                                        const change = optimized - current;
+                                        return change > 0 
+                                            ? `Increase by $${Math.abs(change)}k`
+                                            : `Reduce by $${Math.abs(change)}k`;
+                                    }
+                                    return '';
+                                }
+                            }
+                        }
+                    }
+                }
             });
 
             // 2. ROI (CRITICAL: Populating working data)
