@@ -557,6 +557,12 @@
             });
 
             // 3. Saturation Landscape
+            // Hill function (MMM standard saturation curve): y = (Vmax * x^n) / (K^n + x^n)
+            function hillFunction(x, Vmax, K, n) {
+                if (x === 0) return 0;
+                return (Vmax * Math.pow(x, n)) / (Math.pow(K, n) + Math.pow(x, n));
+            }
+            
             function generateSaturationData() {
                 // Generate data points for smooth curves
                 const spendPoints = [];
@@ -567,21 +573,20 @@
                 for (let spend = 0; spend <= 1500; spend += 25) {
                     spendPoints.push(spend);
                     
-                    // Paid Search: steep initial, then flattens (saturation curve)
-                    const paidSearch = spend < 500 
-                        ? 1.8 * spend - 0.0008 * spend * spend
-                        : 900 + 1.0 * (spend - 500) - 0.0003 * (spend - 500) * (spend - 500);
-                    paidSearchData.push(Math.max(0, Math.min(2400, paidSearch)));
+                    // Paid Search: Classic saturation curve - rapid initial growth, then flattens
+                    // Vmax=2400, K=300 (half-saturation at $300k), n=1.5 (moderate steepness)
+                    const paidSearch = hillFunction(spend, 2400, 300, 1.5);
+                    paidSearchData.push(paidSearch);
                     
-                    // Social Meta: similar but slightly less aggressive
-                    const socialMeta = spend < 500
-                        ? 1.7 * spend - 0.0007 * spend * spend
-                        : 850 + 0.95 * (spend - 500) - 0.0003 * (spend - 500) * (spend - 500);
-                    socialMetaData.push(Math.max(0, Math.min(2300, socialMeta)));
+                    // Social Meta: Similar saturation but slightly less efficient
+                    // Vmax=2300, K=400 (slightly higher half-saturation), n=1.3 (slightly less steep)
+                    const socialMeta = hillFunction(spend, 2300, 400, 1.3);
+                    socialMetaData.push(socialMeta);
                     
-                    // Linear TV: more linear growth
-                    const linearTV = 1.5 * spend - 0.0002 * spend * spend;
-                    linearTVData.push(Math.max(0, Math.min(2300, linearTV)));
+                    // Linear TV: More gradual saturation, higher half-saturation point
+                    // Vmax=2300, K=800 (much higher half-saturation), n=1.0 (more linear)
+                    const linearTV = hillFunction(spend, 2300, 800, 1.0);
+                    linearTVData.push(linearTV);
                 }
                 
                 return { spendPoints, paidSearchData, socialMetaData, linearTVData };
