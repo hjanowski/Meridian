@@ -273,74 +273,73 @@
                 </button>
             </section>
 
-            <!-- ROI & Saturation -->
-            <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="dashboard-card">
-                    <div class="flex justify-between items-start mb-6">
-                        <h2 class="text-xl font-black">Channel Efficiency (mROI)</h2>
-                        <span class="insight-pill bg-indigo-50 text-indigo-700">Search: 3.8x ROI</span>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="roiChart"></canvas>
-                    </div>
-                    <button onclick="toggleChat('Marginal Efficiency')" class="agent-chat-btn">
-                        <div class="sparkle-icon">
-                            <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-                                <!-- Large star -->
-                                <path d="M12 2L14.09 8.26L20 10L14.09 11.74L12 18L9.91 11.74L4 10L9.91 8.26L12 2Z"/>
-                                <!-- Small star top right -->
-                                <path d="M18 4L18.5 5.5L20 6L18.5 6.5L18 8L17.5 6.5L16 6L17.5 5.5L18 4Z"/>
-                                <!-- Small star bottom left -->
-                                <path d="M6 14L6.5 15.5L8 16L6.5 16.5L6 18L5.5 16.5L4 16L5.5 15.5L6 14Z"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-xs font-bold text-white tracking-wider">Let's Chat</p>
-                            <p class="text-[10px] text-white/80 font-bold">Agentforce</p>
-                        </div>
-                    </button>
+            <!-- Channel Efficiency -->
+            <section class="dashboard-card">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 class="text-xl font-black">Channel Efficiency (mROI)</h2>
+                    <span class="insight-pill bg-indigo-50 text-indigo-700">Search: 3.8x ROI</span>
                 </div>
-
-                <div class="dashboard-card">
-                    <div class="flex justify-between items-start mb-6">
-                        <div>
-                            <h2 class="text-xl font-black">Saturation Landscape</h2>
-                            <p class="text-xs text-slate-500 italic mt-1">Incremental Revenue vs. Absolute Spend.</p>
-                        </div>
-                        <span class="insight-pill bg-purple-50 text-purple-700">Volume Saturation</span>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="saturationLandscapeChart"></canvas>
-                    </div>
-                    <button onclick="toggleChat('Saturation Landscape')" class="agent-chat-btn">
-                        <div class="sparkle-icon">
-                            <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-                                <!-- Large star -->
-                                <path d="M12 2L14.09 8.26L20 10L14.09 11.74L12 18L9.91 11.74L4 10L9.91 8.26L12 2Z"/>
-                                <!-- Small star top right -->
-                                <path d="M18 4L18.5 5.5L20 6L18.5 6.5L18 8L17.5 6.5L16 6L17.5 5.5L18 4Z"/>
-                                <!-- Small star bottom left -->
-                                <path d="M6 14L6.5 15.5L8 16L6.5 16.5L6 18L5.5 16.5L4 16L5.5 15.5L6 14Z"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-xs font-bold text-white tracking-wider">Let's Chat</p>
-                            <p class="text-[10px] text-white/80 font-bold">Agentforce</p>
-                        </div>
-                    </button>
+                <div class="chart-container">
+                    <canvas id="roiChart"></canvas>
                 </div>
+                <button onclick="toggleChat('Marginal Efficiency')" class="agent-chat-btn">
+                    <div class="sparkle-icon">
+                        <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Large star -->
+                            <path d="M12 2L14.09 8.26L20 10L14.09 11.74L12 18L9.91 11.74L4 10L9.91 8.26L12 2Z"/>
+                            <!-- Small star top right -->
+                            <path d="M18 4L18.5 5.5L20 6L18.5 6.5L18 8L17.5 6.5L16 6L17.5 5.5L18 4Z"/>
+                            <!-- Small star bottom left -->
+                            <path d="M6 14L6.5 15.5L8 16L6.5 16.5L6 18L5.5 16.5L4 16L5.5 15.5L6 14Z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-white tracking-wider">Let's Chat</p>
+                        <p class="text-[10px] text-white/80 font-bold">Agentforce</p>
+                    </div>
+                </button>
             </section>
 
-            <!-- Uncertainty -->
+            <!-- Saturation Landscape -->
+            <section class="dashboard-card">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <h2 class="text-xl font-black">Saturation Landscape</h2>
+                        <p class="text-xs text-slate-500 italic mt-1">Incremental Revenue vs. Absolute Spend.</p>
+                    </div>
+                    <span class="insight-pill bg-purple-50 text-purple-700">Volume Saturation</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="saturationLandscapeChart"></canvas>
+                </div>
+                <button onclick="toggleChat('Saturation Landscape')" class="agent-chat-btn">
+                    <div class="sparkle-icon">
+                        <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Large star -->
+                            <path d="M12 2L14.09 8.26L20 10L14.09 11.74L12 18L9.91 11.74L4 10L9.91 8.26L12 2Z"/>
+                            <!-- Small star top right -->
+                            <path d="M18 4L18.5 5.5L20 6L18.5 6.5L18 8L17.5 6.5L16 6L17.5 5.5L18 4Z"/>
+                            <!-- Small star bottom left -->
+                            <path d="M6 14L6.5 15.5L8 16L6.5 16.5L6 18L5.5 16.5L4 16L5.5 15.5L6 14Z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-white tracking-wider">Let's Chat</p>
+                        <p class="text-[10px] text-white/80 font-bold">Agentforce</p>
+                    </div>
+                </button>
+            </section>
+
+            <!-- Saturation Curves -->
             <section class="dashboard-card">
                 <div class="flex justify-between items-center mb-8">
-                    <h2 class="text-2xl font-black">Uncertainty Analysis</h2>
-                    <span class="insight-pill bg-slate-100 text-slate-600 border border-slate-200">92% Model Confidence</span>
+                    <h2 class="text-2xl font-black">Saturation Curves</h2>
+                    <span class="insight-pill bg-rose-50 text-rose-700">3.5x Frequency Cap</span>
                 </div>
                 <div class="chart-container !h-[450px]">
-                    <div id="plotlyBayesian" style="width: 100%; height: 100%;"></div>
+                    <div id="plotlySaturationCurve" style="width: 100%; height: 100%;"></div>
                 </div>
-                <button onclick="toggleChat('Bayesian Distributions')" class="agent-chat-btn">
+                <button onclick="toggleChat('Reach Saturation')" class="agent-chat-btn">
                     <div class="sparkle-icon">
                         <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
                             <!-- Large star -->
@@ -414,15 +413,16 @@
                 </button>
             </section>
 
+            <!-- Uncertainty Analysis -->
             <section class="dashboard-card">
                 <div class="flex justify-between items-center mb-8">
-                    <h2 class="text-2xl font-black uppercase">Saturation Curves</h2>
-                    <span class="insight-pill bg-rose-50 text-rose-700">3.5x Frequency Cap</span>
+                    <h2 class="text-2xl font-black">Uncertainty Analysis</h2>
+                    <span class="insight-pill bg-slate-100 text-slate-600 border border-slate-200">92% Model Confidence</span>
                 </div>
                 <div class="chart-container !h-[450px]">
-                    <div id="plotlySaturationCurve" style="width: 100%; height: 100%;"></div>
+                    <div id="plotlyBayesian" style="width: 100%; height: 100%;"></div>
                 </div>
-                <button onclick="toggleChat('Reach Saturation')" class="agent-chat-btn">
+                <button onclick="toggleChat('Bayesian Distributions')" class="agent-chat-btn">
                     <div class="sparkle-icon">
                         <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
                             <!-- Large star -->
