@@ -42,6 +42,13 @@
             max-height: 400px;
         }
 
+        .arrow-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+
         .tab-active {
             border-bottom: 4px solid #4338ca;
             color: #4338ca;
@@ -471,8 +478,11 @@
                     setTimeout(() => {
                         addChangeLabels();
                         addYellowDots();
-                        drawArrows();
-                    }, 400);
+                        // Draw arrows after dots are positioned
+                        setTimeout(() => {
+                            drawArrows();
+                        }, 100);
+                    }, 500);
                 }
             } else {
                 budgetSummary.classList.add('hidden');
@@ -538,24 +548,39 @@
             const chartContainer = document.getElementById('optimizationChart').parentElement;
             const chart = optimizationChartInstance;
             
-            if (!chart) return;
+            if (!chart) {
+                setTimeout(drawArrows, 100);
+                return;
+            }
             
             const chartArea = chart.chartArea;
             const currentMeta = chart.getDatasetMeta(0);
             const optimizedMeta = chart.getDatasetMeta(1);
             const yScale = chart.scales.y;
             
+            if (!currentMeta || !optimizedMeta || !yScale) {
+                setTimeout(drawArrows, 100);
+                return;
+            }
+            
             const currentValues = [95, 100, 100, 98, 98];
             const optimizedValues = [70, 145, 130, 60, 88];
             
-            // Create SVG overlay positioned over chart area
+            // Get canvas dimensions
+            const canvas = document.getElementById('optimizationChart');
+            const canvasRect = canvas.getBoundingClientRect();
+            
+            // Create SVG overlay positioned absolutely over the chart area
             const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-            svg.className = 'arrow-overlay absolute pointer-events-none';
+            svg.className = 'arrow-overlay';
             svg.style.left = `${chartArea.left}px`;
             svg.style.top = `${chartArea.top}px`;
             svg.style.width = `${chartArea.right - chartArea.left}px`;
             svg.style.height = `${chartArea.bottom - chartArea.top}px`;
             svg.style.zIndex = '11';
+            
+            svg.setAttribute('width', chartArea.right - chartArea.left);
+            svg.setAttribute('height', chartArea.bottom - chartArea.top);
             svg.setAttribute('viewBox', `0 0 ${chartArea.right - chartArea.left} ${chartArea.bottom - chartArea.top}`);
             
             // Add arrowhead marker definition
@@ -577,6 +602,7 @@
             // Draw arrows from current dot to optimized dot
             currentMeta.data.forEach((bar, idx) => {
                 if (optimizedMeta.data[idx]) {
+                    // Get pixel positions relative to chart area
                     const x = bar.x - chartArea.left;
                     const y1 = yScale.getPixelForValue(currentValues[idx]) - chartArea.top;
                     const y2 = yScale.getPixelForValue(optimizedValues[idx]) - chartArea.top;
