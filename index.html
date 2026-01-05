@@ -594,30 +594,76 @@
             
             const saturationData = generateSaturationData();
             
-            // Create marker datasets - find closest index for each marker point
+            // Calculate point of diminishing returns (where marginal ROI drops significantly)
+            // Using 85% of maximum efficiency as the threshold
+            function findDiminishingReturnsPoint(dataPoints, spendPoints, Vmax) {
+                const threshold = 0.85 * Vmax;
+                for (let i = 0; i < dataPoints.length - 1; i++) {
+                    // Check if we're past 85% of max and marginal return is dropping
+                    if (dataPoints[i] >= threshold) {
+                        // Find where marginal return drops below 10% of initial slope
+                        const marginalReturn = (dataPoints[i + 1] - dataPoints[i]) / (spendPoints[i + 1] - spendPoints[i]);
+                        if (marginalReturn < 0.1) {
+                            return i;
+                        }
+                    }
+                }
+                // Default to 80% of max spend if no clear threshold
+                return Math.floor(dataPoints.length * 0.8);
+            }
+            
+            // Current spend positions (example values - these would come from actual data)
+            const currentSpends = {
+                paidSearch: 350,
+                socialMeta: 280,
+                linearTV: 600
+            };
+            
+            // Current monthly spend rates (for time calculation)
+            const monthlySpendRates = {
+                paidSearch: 50, // $50k/month
+                socialMeta: 40, // $40k/month
+                linearTV: 80    // $80k/month
+            };
+            
+            // Find diminishing returns points
+            const paidSearchDRIdx = findDiminishingReturnsPoint(saturationData.paidSearchData, saturationData.spendPoints, 2400);
+            const socialMetaDRIdx = findDiminishingReturnsPoint(saturationData.socialMetaData, saturationData.spendPoints, 2300);
+            const linearTVDRIdx = findDiminishingReturnsPoint(saturationData.linearTVData, saturationData.spendPoints, 2300);
+            
+            const paidSearchDRSpend = saturationData.spendPoints[paidSearchDRIdx];
+            const socialMetaDRSpend = saturationData.spendPoints[socialMetaDRIdx];
+            const linearTVDRSpend = saturationData.spendPoints[linearTVDRIdx];
+            
+            // Find current spend indices
             function findClosestIndex(value, array) {
                 return array.reduce((prev, curr, idx) => 
                     Math.abs(curr - value) < Math.abs(array[prev] - value) ? idx : prev, 0
                 );
             }
             
-            // Find indices for marker positions
-            const paidSearchIdx1 = findClosestIndex(210, saturationData.spendPoints);
-            const paidSearchIdx2 = findClosestIndex(470, saturationData.spendPoints);
-            const socialMetaIdx1 = findClosestIndex(210, saturationData.spendPoints);
-            const socialMetaIdx2 = findClosestIndex(470, saturationData.spendPoints);
-            const linearTVIdx1 = findClosestIndex(210, saturationData.spendPoints);
-            const linearTVIdx2 = findClosestIndex(950, saturationData.spendPoints);
+            const paidSearchCurrentIdx = findClosestIndex(currentSpends.paidSearch, saturationData.spendPoints);
+            const socialMetaCurrentIdx = findClosestIndex(currentSpends.socialMeta, saturationData.spendPoints);
+            const linearTVCurrentIdx = findClosestIndex(currentSpends.linearTV, saturationData.spendPoints);
             
-            // Create marker data arrays (null for non-marker points, use actual Y values at marker indices)
-            const paidSearchMarkers = saturationData.paidSearchData.map((val, idx) => 
-                (idx === paidSearchIdx1 || idx === paidSearchIdx2) ? val : null
+            // Calculate recommended additional spend and time remaining
+            const paidSearchAdditional = Math.max(0, paidSearchDRSpend - currentSpends.paidSearch);
+            const socialMetaAdditional = Math.max(0, socialMetaDRSpend - currentSpends.socialMeta);
+            const linearTVAdditional = Math.max(0, linearTVDRSpend - currentSpends.linearTV);
+            
+            const paidSearchMonths = monthlySpendRates.paidSearch > 0 ? Math.ceil(paidSearchAdditional / monthlySpendRates.paidSearch) : 0;
+            const socialMetaMonths = monthlySpendRates.socialMeta > 0 ? Math.ceil(socialMetaAdditional / monthlySpendRates.socialMeta) : 0;
+            const linearTVMonths = monthlySpendRates.linearTV > 0 ? Math.ceil(linearTVAdditional / monthlySpendRates.linearTV) : 0;
+            
+            // Create single marker for each curve at current spend position
+            const paidSearchMarker = saturationData.paidSearchData.map((val, idx) => 
+                idx === paidSearchCurrentIdx ? val : null
             );
-            const socialMetaMarkers = saturationData.socialMetaData.map((val, idx) => 
-                (idx === socialMetaIdx1 || idx === socialMetaIdx2) ? val : null
+            const socialMetaMarker = saturationData.socialMetaData.map((val, idx) => 
+                idx === socialMetaCurrentIdx ? val : null
             );
-            const linearTVMarkers = saturationData.linearTVData.map((val, idx) => 
-                (idx === linearTVIdx1 || idx === linearTVIdx2) ? val : null
+            const linearTVMarker = saturationData.linearTVData.map((val, idx) => 
+                idx === linearTVCurrentIdx ? val : null
             );
             
             new Chart(document.getElementById('saturationLandscapeChart').getContext('2d'), {
@@ -652,38 +698,44 @@
                             pointRadius: 0,
                             borderWidth: 2
                         },
-                        // Markers for Paid Search
+                        // Current position marker for Paid Search
                         {
-                            label: '',
-                            data: paidSearchMarkers,
-                            pointRadius: 5,
+                            label: 'Paid Search - Current',
+                            data: paidSearchMarker,
+                            pointRadius: 8,
                             pointBackgroundColor: '#000000',
-                            pointBorderColor: '#000000',
+                            pointBorderColor: '#ffffff',
                             pointBorderWidth: 2,
+                            pointHoverRadius: 10,
                             showLine: false,
-                            borderColor: 'transparent'
+                            borderColor: 'transparent',
+                            order: 1
                         },
-                        // Markers for Social Meta
+                        // Current position marker for Social Meta
                         {
-                            label: '',
-                            data: socialMetaMarkers,
-                            pointRadius: 5,
+                            label: 'Social Meta - Current',
+                            data: socialMetaMarker,
+                            pointRadius: 8,
                             pointBackgroundColor: '#000000',
-                            pointBorderColor: '#000000',
+                            pointBorderColor: '#ffffff',
                             pointBorderWidth: 2,
+                            pointHoverRadius: 10,
                             showLine: false,
-                            borderColor: 'transparent'
+                            borderColor: 'transparent',
+                            order: 1
                         },
-                        // Markers for Linear TV
+                        // Current position marker for Linear TV
                         {
-                            label: '',
-                            data: linearTVMarkers,
-                            pointRadius: 5,
+                            label: 'Linear TV - Current',
+                            data: linearTVMarker,
+                            pointRadius: 8,
                             pointBackgroundColor: '#000000',
-                            pointBorderColor: '#000000',
+                            pointBorderColor: '#ffffff',
                             pointBorderWidth: 2,
+                            pointHoverRadius: 10,
                             showLine: false,
-                            borderColor: 'transparent'
+                            borderColor: 'transparent',
+                            order: 1
                         }
                     ]
                 },
@@ -729,8 +781,61 @@
                         ...commonOptions.plugins,
                         legend: {
                             ...commonOptions.plugins.legend,
-                            filter: (item) => item.text !== '' // Hide marker datasets from legend
+                            filter: (item) => !item.text.includes('Current') // Hide current position markers from legend
+                        },
+                        tooltip: {
+                            ...commonOptions.plugins.tooltip,
+                            filter: (tooltipItem) => {
+                                // Only show tooltips for the marker datasets (indices 3, 4, 5)
+                                return tooltipItem.datasetIndex >= 3 && tooltipItem.parsed.y !== null;
+                            },
+                            callbacks: {
+                                title: (tooltipItems) => {
+                                    if (tooltipItems.length === 0) return '';
+                                    const item = tooltipItems[0];
+                                    const datasetIndex = item.datasetIndex;
+                                    
+                                    if (datasetIndex === 3) {
+                                        return 'Paid Search - Current Position';
+                                    } else if (datasetIndex === 4) {
+                                        return 'Social Meta - Current Position';
+                                    } else if (datasetIndex === 5) {
+                                        return 'Linear TV - Current Position';
+                                    }
+                                    return '';
+                                },
+                                label: (tooltipItem) => {
+                                    const datasetIndex = tooltipItem.datasetIndex;
+                                    let currentSpend, additionalSpend, monthsRemaining;
+                                    
+                                    if (datasetIndex === 3) {
+                                        currentSpend = currentSpends.paidSearch;
+                                        additionalSpend = paidSearchAdditional;
+                                        monthsRemaining = paidSearchMonths;
+                                    } else if (datasetIndex === 4) {
+                                        currentSpend = currentSpends.socialMeta;
+                                        additionalSpend = socialMetaAdditional;
+                                        monthsRemaining = socialMetaMonths;
+                                    } else if (datasetIndex === 5) {
+                                        currentSpend = currentSpends.linearTV;
+                                        additionalSpend = linearTVAdditional;
+                                        monthsRemaining = linearTVMonths;
+                                    } else {
+                                        return '';
+                                    }
+                                    
+                                    return [
+                                        `Current Spend: $${currentSpend.toFixed(0)}k`,
+                                        `Recommended Additional: $${additionalSpend.toFixed(0)}k`,
+                                        `Time Until Diminishing Returns: ${monthsRemaining} months`
+                                    ];
+                                }
+                            }
                         }
+                    },
+                    interaction: {
+                        intersect: true,
+                        mode: 'point'
                     }
                 }
             });
