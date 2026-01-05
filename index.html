@@ -319,16 +319,13 @@
                     </div>
                     <div class="flex gap-4 justify-center">
                         <button class="px-6 py-3 bg-primary text-white rounded-lg font-bold hover:bg-indigo-700 transition-colors">
-                            Visualize Insights
-                        </button>
-                        <button class="px-6 py-3 bg-primary text-white rounded-lg font-bold hover:bg-indigo-700 transition-colors">
                             Create New Budget Allocation Plan
                         </button>
                     </div>
                 </div>
                 
-                <div class="flex gap-4 mt-4">
-                    <button onclick="toggleVisualizeInsights()" class="px-6 py-2 bg-primary text-white rounded-lg font-bold hover:bg-indigo-700 transition-colors">
+                <div class="flex gap-4 mt-4 items-center">
+                    <button onclick="toggleVisualizeInsights()" class="px-6 py-3 bg-primary text-white rounded-lg font-bold hover:bg-indigo-700 transition-colors">
                         Visualize Insights
                     </button>
                     <button onclick="toggleChat('Optimization Logic')" class="agent-chat-btn">
@@ -494,12 +491,13 @@
                         order: 0
                     });
                     
-                    optimizationChartInstance.update();
+                    optimizationChartInstance.update('none');
                     
-                    // Add change labels after chart renders
+                    // Add change labels and arrows after chart renders
                     setTimeout(() => {
                         addChangeLabels();
-                    }, 100);
+                        drawArrows();
+                    }, 200);
                 }
             } else {
                 budgetSummary.classList.add('hidden');
@@ -511,9 +509,10 @@
                     if (optimizationChartInstance.data.datasets.length > 2) {
                         optimizationChartInstance.data.datasets = optimizationChartInstance.data.datasets.slice(0, 2);
                     }
-                    optimizationChartInstance.update();
-                    // Remove change labels
+                    optimizationChartInstance.update('none');
+                    // Remove change labels and arrows
                     document.querySelectorAll('.change-label').forEach(el => el.remove());
+                    document.querySelectorAll('.arrow-overlay').forEach(el => el.remove());
                 }
             }
         }
@@ -523,38 +522,108 @@
             document.querySelectorAll('.change-label').forEach(el => el.remove());
             
             const chartContainer = document.getElementById('optimizationChart').parentElement;
-            const canvas = document.getElementById('optimizationChart');
             const chart = optimizationChartInstance;
             
             if (!chart) return;
             
             const changes = [
-                { text: 'Reduce Spend by 25k', direction: 'down', arrow: '↓' },
-                { text: 'Increase Spend by 45k', direction: 'up', arrow: '↑' },
-                { text: 'Increase Spend by 30k', direction: 'up', arrow: '↑' },
-                { text: 'Reduce Spend by 38k', direction: 'down', arrow: '↓' },
-                { text: 'Reduce Spend by 10k', direction: 'down', arrow: '↓' }
+                { text: 'Reduce Spend by 25k', direction: 'down' },
+                { text: 'Increase Spend by 45k', direction: 'up' },
+                { text: 'Increase Spend by 30k', direction: 'up' },
+                { text: 'Reduce Spend by 38k', direction: 'down' },
+                { text: 'Reduce Spend by 10k', direction: 'down' }
             ];
             
             // Get chart dimensions and bar positions
-            const meta = chart.getDatasetMeta(0);
+            const currentMeta = chart.getDatasetMeta(0);
             const chartArea = chart.chartArea;
             
             changes.forEach((change, idx) => {
-                if (meta.data[idx]) {
-                    const bar = meta.data[idx];
-                    const x = bar.x;
-                    const y = Math.min(bar.y, chartArea.top - 20);
+                if (currentMeta.data[idx]) {
+                    const bar = currentMeta.data[idx];
+                    const x = bar.x + chartArea.left;
+                    const y = chartArea.top - 25;
                     
                     const label = document.createElement('div');
-                    label.className = 'change-label absolute text-xs font-bold text-slate-700 flex items-center gap-1';
-                    label.innerHTML = `<span>${change.arrow}</span> <span>${change.text}</span>`;
-                    label.style.left = `${x + chartArea.left - 40}px`;
-                    label.style.top = `${y - 10}px`;
+                    label.className = 'change-label absolute text-xs font-bold text-slate-700 text-center';
+                    label.textContent = change.text;
+                    label.style.left = `${x - 50}px`;
+                    label.style.top = `${y}px`;
+                    label.style.width = '100px';
                     label.style.zIndex = '10';
                     chartContainer.appendChild(label);
                 }
             });
+        }
+
+        function drawArrows() {
+            // Remove existing arrows
+            document.querySelectorAll('.arrow-overlay').forEach(el => el.remove());
+            
+            const chartContainer = document.getElementById('optimizationChart').parentElement;
+            const chart = optimizationChartInstance;
+            
+            if (!chart) return;
+            
+            const chartArea = chart.chartArea;
+            const canvas = document.getElementById('optimizationChart');
+            
+            // Get positions of marker datasets
+            const currentMarkers = chart.getDatasetMeta(2); // Current markers
+            const optimizedMarkers = chart.getDatasetMeta(3); // Optimized markers
+            
+            if (!currentMarkers || !optimizedMarkers) return;
+            
+            // Create SVG overlay positioned over chart area
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.className = 'arrow-overlay absolute pointer-events-none';
+            svg.style.left = `${chartArea.left}px`;
+            svg.style.top = `${chartArea.top}px`;
+            svg.style.width = `${chartArea.right - chartArea.left}px`;
+            svg.style.height = `${chartArea.bottom - chartArea.top}px`;
+            svg.style.zIndex = '5';
+            
+            // Add arrowhead marker definition
+            const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+            const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+            marker.setAttribute('id', 'arrowhead-yellow');
+            marker.setAttribute('markerWidth', '10');
+            marker.setAttribute('markerHeight', '10');
+            marker.setAttribute('refX', '9');
+            marker.setAttribute('refY', '3');
+            marker.setAttribute('orient', 'auto');
+            const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+            polygon.setAttribute('points', '0 0, 10 3, 0 6');
+            polygon.setAttribute('fill', '#fbbf24');
+            marker.appendChild(polygon);
+            defs.appendChild(marker);
+            svg.appendChild(defs);
+            
+            // Draw arrows from current marker to optimized marker
+            currentMarkers.data.forEach((currentPoint, idx) => {
+                if (optimizedMarkers.data[idx]) {
+                    const optimizedPoint = optimizedMarkers.data[idx];
+                    
+                    // Convert chart coordinates to SVG coordinates (relative to chart area)
+                    const x1 = currentPoint.x - chartArea.left;
+                    const y1 = currentPoint.y - chartArea.top;
+                    const x2 = optimizedPoint.x - chartArea.left;
+                    const y2 = optimizedPoint.y - chartArea.top;
+                    
+                    // Draw arrow line
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', x1);
+                    line.setAttribute('y1', y1);
+                    line.setAttribute('x2', x2);
+                    line.setAttribute('y2', y2);
+                    line.setAttribute('stroke', '#fbbf24');
+                    line.setAttribute('stroke-width', '3');
+                    line.setAttribute('marker-end', 'url(#arrowhead-yellow)');
+                    svg.appendChild(line);
+                }
+            });
+            
+            chartContainer.appendChild(svg);
         }
 
         // --- Standard Chart Utils ---
