@@ -472,17 +472,15 @@
                         optimizationChartInstance.data.datasets = optimizationChartInstance.data.datasets.slice(0, 2);
                     }
                     
-                    optimizationChartInstance.update('none');
+                    optimizationChartInstance.update();
                     
                     // Add change labels, dots, and arrows after chart renders
+                    // (arrows will be drawn via animation.onComplete callback)
                     setTimeout(() => {
                         addChangeLabels();
                         addYellowDots();
-                        // Draw arrows after dots are positioned
-                        setTimeout(() => {
-                            drawArrows();
-                        }, 100);
-                    }, 500);
+                        drawArrows();
+                    }, 100);
                 }
             } else {
                 budgetSummary.classList.add('hidden');
@@ -543,7 +541,7 @@
 
         function drawArrows() {
             // Remove existing arrows
-            document.querySelectorAll('.arrow-overlay').forEach(el => el.remove());
+            document.querySelectorAll('.arrow-line, .arrow-head').forEach(el => el.remove());
             
             const chartContainer = document.getElementById('optimizationChart').parentElement;
             const chart = optimizationChartInstance;
@@ -558,7 +556,7 @@
             const optimizedMeta = chart.getDatasetMeta(1);
             const yScale = chart.scales.y;
             
-            if (!currentMeta || !optimizedMeta || !yScale) {
+            if (!currentMeta || !optimizedMeta || !yScale || !chartArea) {
                 setTimeout(drawArrows, 100);
                 return;
             }
@@ -566,61 +564,49 @@
             const currentValues = [95, 100, 100, 98, 98];
             const optimizedValues = [70, 145, 130, 60, 88];
             
-            // Get canvas dimensions
-            const canvas = document.getElementById('optimizationChart');
-            const canvasRect = canvas.getBoundingClientRect();
-            
-            // Create SVG overlay positioned absolutely over the chart area
-            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-            svg.className = 'arrow-overlay';
-            svg.style.left = `${chartArea.left}px`;
-            svg.style.top = `${chartArea.top}px`;
-            svg.style.width = `${chartArea.right - chartArea.left}px`;
-            svg.style.height = `${chartArea.bottom - chartArea.top}px`;
-            svg.style.zIndex = '11';
-            
-            svg.setAttribute('width', chartArea.right - chartArea.left);
-            svg.setAttribute('height', chartArea.bottom - chartArea.top);
-            svg.setAttribute('viewBox', `0 0 ${chartArea.right - chartArea.left} ${chartArea.bottom - chartArea.top}`);
-            
-            // Add arrowhead marker definition
-            const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-            const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
-            marker.setAttribute('id', 'arrowhead-orange');
-            marker.setAttribute('markerWidth', '12');
-            marker.setAttribute('markerHeight', '12');
-            marker.setAttribute('refX', '10');
-            marker.setAttribute('refY', '3');
-            marker.setAttribute('orient', 'auto');
-            const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-            polygon.setAttribute('points', '0 0, 12 3, 0 6');
-            polygon.setAttribute('fill', '#f97316'); // Orange color
-            marker.appendChild(polygon);
-            defs.appendChild(marker);
-            svg.appendChild(defs);
-            
-            // Draw arrows from current dot to optimized dot
+            // Draw arrows using HTML divs for better visibility
             currentMeta.data.forEach((bar, idx) => {
-                if (optimizedMeta.data[idx]) {
-                    // Get pixel positions relative to chart area
-                    const x = bar.x - chartArea.left;
-                    const y1 = yScale.getPixelForValue(currentValues[idx]) - chartArea.top;
-                    const y2 = yScale.getPixelForValue(optimizedValues[idx]) - chartArea.top;
+                if (optimizedMeta.data[idx] && idx < currentValues.length) {
+                    const x = bar.x + chartArea.left;
+                    const y1 = yScale.getPixelForValue(currentValues[idx]);
+                    const y2 = yScale.getPixelForValue(optimizedValues[idx]);
                     
-                    // Draw arrow line with orange color
-                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                    line.setAttribute('x1', x);
-                    line.setAttribute('y1', y1);
-                    line.setAttribute('x2', x);
-                    line.setAttribute('y2', y2);
-                    line.setAttribute('stroke', '#f97316'); // Orange color
-                    line.setAttribute('stroke-width', '4');
-                    line.setAttribute('marker-end', 'url(#arrowhead-orange)');
-                    svg.appendChild(line);
+                    if (!isNaN(x) && !isNaN(y1) && !isNaN(y2)) {
+                        // Create arrow line
+                        const arrowLine = document.createElement('div');
+                        arrowLine.className = 'arrow-line';
+                        arrowLine.style.position = 'absolute';
+                        arrowLine.style.left = `${x - 2}px`;
+                        arrowLine.style.top = `${Math.min(y1, y2)}px`;
+                        arrowLine.style.width = '4px';
+                        arrowLine.style.height = `${Math.abs(y2 - y1)}px`;
+                        arrowLine.style.backgroundColor = '#f97316';
+                        arrowLine.style.zIndex = '12';
+                        arrowLine.style.pointerEvents = 'none';
+                        chartContainer.appendChild(arrowLine);
+                        
+                        // Create arrowhead
+                        const arrowHead = document.createElement('div');
+                        arrowHead.className = 'arrow-head';
+                        arrowHead.style.position = 'absolute';
+                        arrowHead.style.left = `${x - 6}px`;
+                        arrowHead.style.top = `${y2 - 6}px`;
+                        arrowHead.style.width = '0';
+                        arrowHead.style.height = '0';
+                        arrowHead.style.borderLeft = '6px solid transparent';
+                        arrowHead.style.borderRight = '6px solid transparent';
+                        if (y2 > y1) {
+                            arrowHead.style.borderTop = '12px solid #f97316';
+                        } else {
+                            arrowHead.style.borderBottom = '12px solid #f97316';
+                            arrowHead.style.top = `${y2 - 6}px`;
+                        }
+                        arrowHead.style.zIndex = '13';
+                        arrowHead.style.pointerEvents = 'none';
+                        chartContainer.appendChild(arrowHead);
+                    }
                 }
             });
-            
-            chartContainer.appendChild(svg);
         }
 
         // --- Standard Chart Utils ---
@@ -698,6 +684,17 @@
                                     }
                                     return '';
                                 }
+                            }
+                        }
+                    },
+                    animation: {
+                        onComplete: () => {
+                            if (insightsVisible) {
+                                setTimeout(() => {
+                                    addChangeLabels();
+                                    addYellowDots();
+                                    drawArrows();
+                                }, 100);
                             }
                         }
                     }
