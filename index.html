@@ -239,42 +239,18 @@
 
     <main class="max-w-7xl mx-auto px-6 py-12">
 
-        <!-- Informational Widgets at Top (Side by Side) -->
-        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-            <!-- Organic Baseline vs. Media Lift (Smaller) -->
+        <!-- Informational Widgets at Top (Full Width) -->
+        <section class="mb-12">
+            <!-- Organic Baseline vs. Media Lift (Full Width) -->
             <div class="dashboard-card">
                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-black">Organic Baseline vs. Media Lift</h2>
-                    <span class="insight-pill bg-purple-50 text-purple-700">68% Organic Base</span>
+                    <h2 class="text-lg font-black">Baseline Revenue vs. Media Revenue</h2>
+                    <span class="insight-pill bg-purple-50 text-purple-700">68% Baseline</span>
                 </div>
-                <div class="chart-container !h-[280px]">
+                <div class="chart-container !h-[380px]">
                     <canvas id="baselineChart"></canvas>
                 </div>
                 <button onclick="toggleChat('Baseline Demand')" class="agent-chat-btn">
-                    <div class="sparkle-icon">
-                        <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2L14.09 8.26L20 10L14.09 11.74L12 18L9.91 11.74L4 10L9.91 8.26L12 2Z"/>
-                            <path d="M18 4L18.5 5.5L20 6L18.5 6.5L18 8L17.5 6.5L16 6L17.5 5.5L18 4Z"/>
-                            <path d="M6 14L6.5 15.5L8 16L6.5 16.5L6 18L5.5 16.5L4 16L5.5 15.5L6 14Z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-xs font-bold text-white tracking-wider">Let's Chat</p>
-                        <p class="text-[10px] text-white/80 font-bold">Agentforce</p>
-                    </div>
-                </button>
-            </div>
-
-            <!-- Certainty Analysis (Smaller) -->
-            <div class="dashboard-card">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-black">Certainty Analysis</h2>
-                    <span class="insight-pill bg-slate-100 text-slate-600 border border-slate-200">92% Model Confidence</span>
-                </div>
-                <div class="chart-container !h-[280px]">
-                    <div id="plotlyBayesian" style="width: 100%; height: 100%;"></div>
-                </div>
-                <button onclick="toggleChat('Bayesian Distributions')" class="agent-chat-btn">
                     <div class="sparkle-icon">
                         <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12 2L14.09 8.26L20 10L14.09 11.74L12 18L9.91 11.74L4 10L9.91 8.26L12 2Z"/>
@@ -1004,26 +980,6 @@
                 }
             });
 
-            // 4. Bayesian
-            function getDensity(m, s) {
-                let x = [], y = [];
-                for(let i = m-4*s; i <= m+4*s; i += s/10) {
-                    x.push(i);
-                    y.push(Math.exp(-0.5*Math.pow((i-m)/s, 2))/(s*Math.sqrt(2*Math.PI)));
-                }
-                return {x, y};
-            }
-            const dist = getDensity(1.4, 0.18);
-            Plotly.newPlot('plotlyBayesian', [{
-                x: dist.x, y: dist.y, type: 'scatter', fill: 'tozeroy', mode: 'lines',
-                line: {color: '#4338ca', width: 3}
-            }], {
-                margin: {t: 20, r: 20, l: 40, b: 40},
-                xaxis: {title: 'Sales Coefficient (Impact)', fixedrange: true},
-                yaxis: {showticklabels: false, fixedrange: true},
-                plot_bgcolor: "rgba(0,0,0,0)",
-                paper_bgcolor: "rgba(0,0,0,0)"
-            }, {responsive: true, displayModeBar: false});
 
             // 5. Decay
             new Chart(document.getElementById('decayChart').getContext('2d'), {
@@ -1038,17 +994,60 @@
                 options: commonOptions
             });
 
-            // 6. Baseline
+            // 6. Baseline Revenue vs. Media Revenue with Expected Revenue
             new Chart(document.getElementById('baselineChart').getContext('2d'), {
                 type: 'line',
                 data: {
                     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
                     datasets: [
-                        { label: wrapLabel('Organic Baseline'), data: [400, 415, 430, 425, 410, 440, 460, 470, 465, 490, 530, 590], fill: true, backgroundColor: '#f1f5f9', pointRadius: 0 },
-                        { label: wrapLabel('Media Lift'), data: [70, 85, 110, 100, 95, 120, 145, 155, 140, 180, 220, 310], fill: true, backgroundColor: 'rgba(67, 56, 202, 0.8)', pointRadius: 0 }
+                        { 
+                            label: wrapLabel('Baseline Revenue'), 
+                            data: [400, 415, 430, 425, 410, 440, 460, 470, 465, 490, 530, 590], 
+                            fill: true, 
+                            backgroundColor: 'rgba(241, 245, 249, 0.8)', 
+                            borderColor: '#94a3b8',
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            order: 1
+                        },
+                        { 
+                            label: wrapLabel('Media Revenue'), 
+                            data: [70, 85, 110, 100, 95, 120, 145, 155, 140, 180, 220, 310], 
+                            fill: true, 
+                            backgroundColor: 'rgba(67, 56, 202, 0.7)', 
+                            borderColor: '#4338ca',
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            order: 2
+                        },
+                        { 
+                            label: wrapLabel('Expected Revenue'), 
+                            data: [485, 515, 560, 545, 520, 580, 625, 645, 625, 690, 775, 930], 
+                            fill: false, 
+                            borderColor: '#10b981',
+                            borderWidth: 3,
+                            borderDash: [5, 5],
+                            pointRadius: 4,
+                            pointBackgroundColor: '#10b981',
+                            pointBorderColor: '#ffffff',
+                            pointBorderWidth: 2,
+                            order: 0
+                        }
                     ]
                 },
-                options: { ...commonOptions, scales: { y: { stacked: true } } }
+                options: { 
+                    ...commonOptions, 
+                    scales: { 
+                        y: { 
+                            stacked: true,
+                            title: {
+                                display: true,
+                                text: 'Revenue ($000s)',
+                                font: { weight: 'bold' }
+                            }
+                        }
+                    } 
+                }
             });
 
             // Saturation Curves widget removed
