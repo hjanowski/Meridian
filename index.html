@@ -286,44 +286,45 @@
                 
                 <!-- Budget Summary (Hidden by default) -->
                 <div id="budgetSummary" class="hidden mt-6 p-6 bg-slate-50 rounded-xl border border-slate-200">
-                    <div class="grid grid-cols-3 gap-4 mb-6">
-                        <div class="text-center">
-                            <p class="text-sm text-slate-600 font-medium">Total Overspend</p>
-                            <p class="text-2xl font-black text-slate-800">$75,000</p>
+                    <div class="flex items-center justify-between gap-4">
+                        <div class="grid grid-cols-3 gap-4 flex-1">
+                            <div class="text-center">
+                                <p class="text-sm text-slate-600 font-medium">Total Overspend</p>
+                                <p class="text-2xl font-black text-slate-800">$75,000</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-sm text-slate-600 font-medium">Total Underspend</p>
+                                <p class="text-2xl font-black text-slate-800">$73,000</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-sm text-slate-600 font-medium">Spend Surplus</p>
+                                <p class="text-2xl font-black text-emerald-600">$2,000</p>
+                            </div>
                         </div>
-                        <div class="text-center">
-                            <p class="text-sm text-slate-600 font-medium">Total Underspend</p>
-                            <p class="text-2xl font-black text-slate-800">$73,000</p>
-                        </div>
-                        <div class="text-center">
-                            <p class="text-sm text-slate-600 font-medium">Spend Surplus</p>
-                            <p class="text-2xl font-black text-emerald-600">$2,000</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-4 justify-center">
-                        <button class="px-6 py-3 bg-primary text-white rounded-lg font-bold hover:bg-indigo-700 transition-colors">
+                        <button class="px-6 py-3 bg-primary text-white rounded-lg font-bold hover:bg-indigo-700 transition-colors whitespace-nowrap">
                             Create New Budget Allocation Plan
                         </button>
                     </div>
                 </div>
                 
                 <div class="flex gap-4 mt-4 items-center">
-                    <button onclick="toggleVisualizeInsights()" class="px-6 py-3 bg-primary text-white rounded-lg font-bold hover:bg-indigo-700 transition-colors">
+                    <button onclick="toggleChat('Optimization Logic')" class="flex items-center gap-2 px-5 py-3 bg-[#2563eb] text-white rounded-[50px] font-bold hover:bg-[#1d4ed8] transition-all shadow-[0_4px_12px_rgba(37,99,235,0.3)] hover:shadow-[0_8px_20px_rgba(37,99,235,0.4)] hover:-translate-y-0.5 cursor-pointer border-none relative">
+                        <div class="sparkle-icon">
+                            <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2L14.09 8.26L20 10L14.09 11.74L12 18L9.91 11.74L4 10L9.91 8.26L12 2Z"/>
+                                <path d="M18 4L18.5 5.5L20 6L18.5 6.5L18 8L17.5 6.5L16 6L17.5 5.5L18 4Z"/>
+                                <path d="M6 14L6.5 15.5L8 16L6.5 16.5L6 18L5.5 16.5L4 16L5.5 15.5L6 14Z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-white tracking-wider">Let's Chat</p>
+                            <p class="text-[10px] text-white/80 font-bold">Agentforce</p>
+                        </div>
+                    </button>
+                    <button onclick="toggleVisualizeInsights()" class="flex items-center gap-2 px-6 py-3 bg-[#2563eb] text-white rounded-[50px] font-bold hover:bg-[#1d4ed8] transition-all shadow-[0_4px_12px_rgba(37,99,235,0.3)] hover:shadow-[0_8px_20px_rgba(37,99,235,0.4)] hover:-translate-y-0.5 cursor-pointer border-none">
                         Visualize Insights
                     </button>
-                    <button onclick="toggleChat('Optimization Logic')" class="agent-chat-btn">
-                    <div class="sparkle-icon">
-                        <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2L14.09 8.26L20 10L14.09 11.74L12 18L9.91 11.74L4 10L9.91 8.26L12 2Z"/>
-                            <path d="M18 4L18.5 5.5L20 6L18.5 6.5L18 8L17.5 6.5L16 6L17.5 5.5L18 4Z"/>
-                            <path d="M6 14L6.5 15.5L8 16L6.5 16.5L6 18L5.5 16.5L4 16L5.5 15.5L6 14Z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-xs font-bold text-white tracking-wider">Let's Chat</p>
-                        <p class="text-[10px] text-white/80 font-bold">Agentforce</p>
-                    </div>
-                </button>
+                </div>
             </section>
 
             <!-- Saturation Landscape -->
@@ -450,11 +451,10 @@
                     
                     optimizationChartInstance.update();
                     
-                    // Add change labels, dots, and arrows after chart renders
+                    // Add change labels and arrows after chart renders
                     // (arrows will be drawn via animation.onComplete callback)
                     setTimeout(() => {
                         addChangeLabels();
-                        addYellowDots();
                         drawArrows();
                     }, 100);
                 }
@@ -469,10 +469,9 @@
                         optimizationChartInstance.data.datasets = optimizationChartInstance.data.datasets.slice(0, 2);
                     }
                     optimizationChartInstance.update('none');
-                    // Remove change labels, dots, and arrows
+                    // Remove change labels and arrows
                     document.querySelectorAll('.change-label').forEach(el => el.remove());
-                    document.querySelectorAll('.yellow-dot').forEach(el => el.remove());
-                    document.querySelectorAll('.arrow-overlay').forEach(el => el.remove());
+                    document.querySelectorAll('.diagonal-arrow').forEach(el => el.remove());
                 }
             }
         }
@@ -517,7 +516,7 @@
 
         function drawArrows() {
             // Remove existing arrows
-            document.querySelectorAll('.arrow-line, .arrow-head').forEach(el => el.remove());
+            document.querySelectorAll('.diagonal-arrow').forEach(el => el.remove());
             
             const chartContainer = document.getElementById('optimizationChart').parentElement;
             const chart = optimizationChartInstance;
@@ -531,8 +530,9 @@
             const currentMeta = chart.getDatasetMeta(0);
             const optimizedMeta = chart.getDatasetMeta(1);
             const yScale = chart.scales.y;
+            const xScale = chart.scales.x;
             
-            if (!currentMeta || !optimizedMeta || !yScale || !chartArea) {
+            if (!currentMeta || !optimizedMeta || !yScale || !xScale || !chartArea) {
                 setTimeout(drawArrows, 100);
                 return;
             }
@@ -540,46 +540,114 @@
             const currentValues = [95, 100, 100, 98, 98];
             const optimizedValues = [70, 145, 130, 60, 88];
             
-            // Draw arrows using HTML divs for better visibility
-            currentMeta.data.forEach((bar, idx) => {
+            // Calculate bar width from xScale (category width divided by number of datasets)
+            // For grouped bars, Chart.js typically uses about 0.8 of category width for the group
+            const numDatasets = chart.data.datasets.length;
+            let categoryWidth;
+            if (xScale.ticks && xScale.ticks.length > 1) {
+                // Estimate category width from spacing between first two categories
+                const firstTick = xScale.getPixelForValue(0);
+                const secondTick = xScale.getPixelForValue(1);
+                categoryWidth = Math.abs(secondTick - firstTick);
+            } else {
+                // Fallback: use spacing between bars
+                const barSpacing = Math.abs(optimizedMeta.data[0].x - currentMeta.data[0].x);
+                categoryWidth = barSpacing * 2.5; // Approximate
+            }
+            // Grouped bars typically use 0.8 of category width, divided by number of datasets
+            const estimatedBarWidth = (categoryWidth * 0.8) / numDatasets;
+            
+            // Draw diagonal arrows from Current Spend bar to Optimized Spend bar
+            currentMeta.data.forEach((currentBar, idx) => {
                 if (optimizedMeta.data[idx] && idx < currentValues.length) {
-                    const x = bar.x + chartArea.left;
-                    const y1 = yScale.getPixelForValue(currentValues[idx]);
-                    const y2 = yScale.getPixelForValue(optimizedValues[idx]);
+                    const optimizedBar = optimizedMeta.data[idx];
                     
-                    if (!isNaN(x) && !isNaN(y1) && !isNaN(y2)) {
-                        // Create arrow line
-                        const arrowLine = document.createElement('div');
-                        arrowLine.className = 'arrow-line';
-                        arrowLine.style.position = 'absolute';
-                        arrowLine.style.left = `${x - 2}px`;
-                        arrowLine.style.top = `${Math.min(y1, y2)}px`;
-                        arrowLine.style.width = '4px';
-                        arrowLine.style.height = `${Math.abs(y2 - y1)}px`;
-                        arrowLine.style.backgroundColor = '#f97316';
-                        arrowLine.style.zIndex = '12';
-                        arrowLine.style.pointerEvents = 'none';
-                        chartContainer.appendChild(arrowLine);
+                    // Get bar positions (bar.x is the center of the bar)
+                    const currentBarX = currentBar.x;
+                    const optimizedBarX = optimizedBar.x;
+                    
+                    // Use the estimated bar width
+                    const barWidth = estimatedBarWidth;
+                    
+                    // Calculate coordinates relative to chart area
+                    // In Chart.js, bar.x is relative to the chart area, not the canvas
+                    // chartArea.left is the chart area's left position within the canvas
+                    const chartAreaStartX = currentBarX + barWidth / 2;
+                    const chartAreaStartY = yScale.getPixelForValue(currentValues[idx]);
+                    const chartAreaEndX = optimizedBarX;
+                    const chartAreaEndY = yScale.getPixelForValue(optimizedValues[idx]);
+                    
+                    if (!isNaN(chartAreaStartX) && !isNaN(chartAreaStartY) && !isNaN(chartAreaEndX) && !isNaN(chartAreaEndY)) {
+                        // Get canvas element
+                        const canvas = chart.canvas;
                         
-                        // Create arrowhead
-                        const arrowHead = document.createElement('div');
-                        arrowHead.className = 'arrow-head';
-                        arrowHead.style.position = 'absolute';
-                        arrowHead.style.left = `${x - 6}px`;
-                        arrowHead.style.top = `${y2 - 6}px`;
-                        arrowHead.style.width = '0';
-                        arrowHead.style.height = '0';
-                        arrowHead.style.borderLeft = '6px solid transparent';
-                        arrowHead.style.borderRight = '6px solid transparent';
-                        if (y2 > y1) {
-                            arrowHead.style.borderTop = '12px solid #f97316';
-                        } else {
-                            arrowHead.style.borderBottom = '12px solid #f97316';
-                            arrowHead.style.top = `${y2 - 6}px`;
+                        // Calculate canvas offset within container using offset properties
+                        let canvasOffsetX = 0;
+                        let canvasOffsetY = 0;
+                        let element = canvas;
+                        while (element && element !== chartContainer) {
+                            canvasOffsetX += element.offsetLeft;
+                            canvasOffsetY += element.offsetTop;
+                            element = element.offsetParent;
                         }
-                        arrowHead.style.zIndex = '13';
-                        arrowHead.style.pointerEvents = 'none';
-                        chartContainer.appendChild(arrowHead);
+                        
+                        // Create or get the main SVG overlay for all arrows
+                        let svgOverlay = chartContainer.querySelector('.arrows-svg-overlay');
+                        if (!svgOverlay) {
+                            svgOverlay = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                            svgOverlay.className = 'arrows-svg-overlay diagonal-arrow';
+                            svgOverlay.style.position = 'absolute';
+                            // Position SVG to match chart area position (canvas offset + chart area offset)
+                            svgOverlay.style.left = `${canvasOffsetX + chartArea.left}px`;
+                            svgOverlay.style.top = `${canvasOffsetY + chartArea.top}px`;
+                            svgOverlay.style.width = `${chartArea.right - chartArea.left}px`;
+                            svgOverlay.style.height = `${chartArea.bottom - chartArea.top}px`;
+                            svgOverlay.style.pointerEvents = 'none';
+                            svgOverlay.style.zIndex = '12';
+                            svgOverlay.setAttribute('overflow', 'visible');
+                            svgOverlay.setAttribute('viewBox', `0 0 ${chartArea.right - chartArea.left} ${chartArea.bottom - chartArea.top}`);
+                            chartContainer.appendChild(svgOverlay);
+                        }
+                        
+                        // Use coordinates relative to chart area (which matches SVG viewBox)
+                        const relativeStartX = chartAreaStartX;
+                        const relativeStartY = chartAreaStartY;
+                        const relativeEndX = chartAreaEndX;
+                        const relativeEndY = chartAreaEndY;
+                        
+                        // Create the arrow line (diagonal)
+                        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                        line.setAttribute('x1', relativeStartX.toString());
+                        line.setAttribute('y1', relativeStartY.toString());
+                        line.setAttribute('x2', relativeEndX.toString());
+                        line.setAttribute('y2', relativeEndY.toString());
+                        line.setAttribute('stroke', '#fbbf24'); // Yellow color
+                        line.setAttribute('stroke-width', '3');
+                        line.setAttribute('marker-end', `url(#arrowhead-${idx})`);
+                        svgOverlay.appendChild(line);
+                        
+                        // Create arrowhead marker (only once, reuse for all arrows)
+                        if (!svgOverlay.querySelector('defs')) {
+                            const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+                            svgOverlay.appendChild(defs);
+                        }
+                        const defs = svgOverlay.querySelector('defs');
+                        
+                        if (!defs.querySelector(`#arrowhead-${idx}`)) {
+                            const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+                            marker.setAttribute('id', `arrowhead-${idx}`);
+                            marker.setAttribute('markerWidth', '10');
+                            marker.setAttribute('markerHeight', '10');
+                            marker.setAttribute('refX', '9');
+                            marker.setAttribute('refY', '3');
+                            marker.setAttribute('orient', 'auto');
+                            
+                            const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+                            polygon.setAttribute('points', '0 0, 10 3, 0 6');
+                            polygon.setAttribute('fill', '#fbbf24'); // Yellow color
+                            marker.appendChild(polygon);
+                            defs.appendChild(marker);
+                        }
                     }
                 }
             });
@@ -668,7 +736,6 @@
                             if (insightsVisible) {
                                 setTimeout(() => {
                                     addChangeLabels();
-                                    addYellowDots();
                                     drawArrows();
                                 }, 100);
                             }
@@ -1008,7 +1075,8 @@
                             borderColor: '#94a3b8',
                             borderWidth: 2,
                             pointRadius: 0,
-                            order: 1
+                            order: 1,
+                            stack: 'stack1'
                         },
                         { 
                             label: wrapLabel('Media Revenue'), 
@@ -1018,7 +1086,8 @@
                             borderColor: '#4338ca',
                             borderWidth: 2,
                             pointRadius: 0,
-                            order: 2
+                            order: 2,
+                            stack: 'stack1'
                         },
                         { 
                             label: wrapLabel('Expected Revenue'), 
@@ -1032,6 +1101,7 @@
                             pointBorderColor: '#ffffff',
                             pointBorderWidth: 2,
                             order: 0
+                            // No stack property - will render at absolute position above stacked areas
                         }
                     ]
                 },
@@ -1046,7 +1116,11 @@
                                 font: { weight: 'bold' }
                             }
                         }
-                    } 
+                    },
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    }
                 }
             });
 
